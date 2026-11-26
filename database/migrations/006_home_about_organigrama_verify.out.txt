@@ -1,0 +1,30 @@
+Verificación ejecutada vía Prisma Client ($queryRawUnsafe, solo SELECT).
+
+1. content.team_members: 21 columnas confirmadas, incluidas las 10 nuevas
+   (profession, area, service_code, specialties, certifications,
+   certifications_label, is_transversal, org_level, parent_id,
+   connector_curve).
+2. Tablas nuevas confirmadas en el schema `content`: company_profile,
+   hero_slides, company_values, who_we_are_concepts.
+3. content.company_profile: 1 fila (id=1), about_hero_title y
+   about_who_title con el texto real sembrado, mission_vision_is_placeholder
+   = true, home_about_stat1_value/stat2_value = NULL (CONFIGURACIÓN
+   PENDIENTE, como se documentó).
+4. Conteos: hero_slides = 5, company_values = 5, who_we_are_concepts = 3.
+5. Permisos nuevos: 14 filas (cms.home.read/update, cms.hero.*,
+   cms.values.*, cms.concepts.*) — confirmadas en security.permissions.
+   Asignación a roles: Administrador = 14, Editor = 14.
+6. Datos existentes intactos: content.team_members sigue con 0 filas
+   (tabla vacía desde Etapa 5, sin datos falsos insertados), catalog.services
+   sigue con 5 servicios reales activos (Etapa 5, sin cambios).
+
+Prueba funcional adicional (script desechable, no versionado): login real,
+GET/PATCH /company-profile, GET /company-values, GET /who-we-are-concepts,
+GET /hero-slides (items JSONB con iconos correctamente serializados),
+POST/GET/DELETE /team con los 10 campos nuevos del Organigrama (specialties
+y certifications como arrays, service_code enlazado a catalog.services,
+org_level, connector_curve) — todo respondió correctamente y se limpió el
+registro de prueba. GET /company-values sin token -> 401 (permisos nuevos
+correctamente exigidos).
+
+Resultado: PASS.

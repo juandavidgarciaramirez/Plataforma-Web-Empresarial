@@ -1,0 +1,15 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js (temporal, no
+versionado).
+
+Statements ejecutados: 6 — todos OK, COMMIT aplicado.
+1. INSERT Jennifer Zuluaga (raíz, org_level=1)
+2. INSERT Jenny Sierra (org_level=2, parent_id -> Jennifer)
+3. INSERT Manuel Mesa (org_level=2, parent_id -> Jennifer)
+4. INSERT Felipe Reyes (org_level=3, parent_id -> Jennifer, connector_curve=right)
+5. INSERT Yuribel Rodríguez (org_level=3, is_transversal=true, parent_id -> Jennifer, connector_curve=right)
+6. INSERT Javier Carrero (org_level=2, parent_id -> Jennifer)
+
+Cada parent_id se resolvió con `(SELECT id FROM content.team_members WHERE
+name = 'Jennifer Zuluaga')`, ejecutado después del INSERT de Jennifer
+(statement 1) dentro de la misma transacción.

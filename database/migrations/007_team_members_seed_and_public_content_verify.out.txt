@@ -1,0 +1,33 @@
+Verificación ejecutada vía Prisma Client ($queryRawUnsafe, solo SELECT).
+
+6 filas en content.team_members, todas con parent_id apuntando a Jennifer
+Zuluaga (id raíz) salvo ella misma (parent_id NULL, org_level=1):
+
+id | name               | org_level | parent_id | connector_curve | is_transversal | service_code
+3  | Jennifer Zuluaga   | 1         | NULL      | NULL             | false           | capital-business-services
+4  | Jenny Sierra       | 2         | 3         | NULL             | false           | capital-hse
+5  | Manuel Mesa        | 2         | 3         | NULL             | false           | capital-business-services
+6  | Felipe Reyes       | 3         | 3         | right            | false           | capital-hse
+7  | Yuribel Rodríguez  | 3         | 3         | right            | true            | capital-business-services
+8  | Javier Carrero     | 2         | 3         | NULL             | false           | capital-business-services
+
+total = 6, con_padre_jennifer = 5 (correcto: los 5 que no son Jennifer).
+
+Prueba funcional adicional (backend, sin versionar): se agregaron 5
+controladores públicos (`GET /public/{hero-slides,company-profile,
+company-values,who-we-are-concepts,team}`, todos con `@Public()`, sin JWT) —
+probados en vivo sin token: hero-slides=5, company-profile=objeto,
+company-values=5, who-we-are-concepts=3, team=6. Todos coinciden con los
+datos reales sembrados en las Etapas 7 y 8.
+
+Prueba funcional adicional (frontend): `npm run dev` levantado, `GET /` y
+`GET /about` devuelven 200 sin errores de compilación ni runtime.
+`GET /about` (Server Component, fetch en el servidor) confirmado con
+contenido real en el HTML servido: "Jennifer Zuluaga", "Jenny Sierra",
+"Integridad", "Personas", "Una visión integral", "Brindar soluciones
+integrales". El carrusel de Home y el preview "Conócenos" son componentes
+cliente (react-query) — no verificables por curl del HTML inicial, pero usan
+el mismo patrón `apiGet` + `useQuery` ya probado en `useCareers.ts`, y el
+endpoint que consumen respondió correctamente en la prueba directa.
+
+Resultado: PASS.

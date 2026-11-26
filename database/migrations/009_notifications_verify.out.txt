@@ -1,0 +1,22 @@
+Verificación ejecutada vía Prisma Client ($queryRawUnsafe, solo SELECT).
+
+foundation.notifications creada con las 8 columnas esperadas (id, uuid,
+user_id, title, message, type, link, is_read, created_at). 5 permisos
+foundation.* confirmados en security.permissions, los 5 asignados a
+Administrador. foundation.files y foundation.system_settings sin alterar
+(0 y 5 filas respectivamente, igual que antes de la migración).
+
+Prueba funcional adicional (backend, sin versionar): login real, GET
+/settings/public (sin token, 1 fila pública), GET /settings (5 filas),
+PATCH /settings/:key (actualizado y revertido), POST /files (multipart
+real, registro creado en foundation.files con company_id/storage_provider_id
+resueltos automáticamente), GET /files, DELETE /files/:id (borrado
+lógico), GET /notifications y /notifications/unread-count. Todo
+respondió correctamente. Fila y archivo físico de prueba limpiados después.
+
+Adicional (no en este archivo de migración): AuditService se reescribió
+para persistir en security.audit_logs en vez de memoria — probado en vivo
+(login + PATCH company-profile generaron filas reales, actor resuelto
+correctamente por email).
+
+Resultado: PASS.

@@ -1,0 +1,125 @@
+﻿El paginador no se usar�.
+El estilo de borde es 2.
+=== A. Tablas security vs lista minima exigida ===
++---------------------+--------+
+|   required_table    | status |
++---------------------+--------+
+| api_clients         | OK     |
+| email_verifications | OK     |
+| login_attempts      | OK     |
+| password_resets     | OK     |
+| permissions         | OK     |
+| positions           | OK     |
+| role_permissions    | OK     |
+| roles               | OK     |
+| sessions            | OK     |
+| users               | OK     |
++---------------------+--------+
+(10 filas)
+
+=== B. Cada tabla de security: PK, UUID, timestamps, soft delete ===
++---------------------+-----------+----------+----------------+----------------+-----------------+
+|     table_name      | has_id_pk | has_uuid | has_created_at | has_updated_at | has_soft_delete |
++---------------------+-----------+----------+----------------+----------------+-----------------+
+| api_clients         | t         | t        | t              | t              | f               |
+| audit_logs          | t         | t        | t              | f              | f               |
+| email_verifications | t         | t        | t              | f              | f               |
+| login_attempts      | t         | t        | f              | f              | f               |
+| password_resets     | t         | t        | t              | f              | f               |
+| permissions         | t         | t        | t              | f              | f               |
+| positions           | t         | t        | t              | t              | f               |
+| role_permissions    | t         | f        | t              | f              | f               |
+| roles               | t         | t        | t              | t              | f               |
+| sessions            | t         | t        | t              | f              | f               |
+| users               | t         | t        | t              | t              | t               |
++---------------------+-----------+----------+----------------+----------------+-----------------+
+(11 filas)
+
+=== C. Password hashing: tipo y longitud de password_hash ===
++------------+---------------+-----------+--------------------------+
+| table_name |  column_name  | data_type | character_maximum_length |
++------------+---------------+-----------+--------------------------+
+| users      | password_hash | text      |                          |
++------------+---------------+-----------+--------------------------+
+(1 fila)
+
+=== D. Emails: hay UNIQUE case-insensitive? ===
++----------------+-----------------------------------------------------------------------------------------+
+|   indexname    |                                        indexdef                                         |
++----------------+-----------------------------------------------------------------------------------------+
+| uk_users_email | CREATE UNIQUE INDEX uk_users_email ON security.users USING btree (lower((email)::text)) |
++----------------+-----------------------------------------------------------------------------------------+
+(1 fila)
+
+=== E. Roles actuales (no tocar) ===
++----+---------------+-----------+-----------+
+| id |     name      | is_system | is_active |
++----+---------------+-----------+-----------+
+|  1 | Administrador | t         | t         |
+|  2 | Editor        | t         | t         |
+|  3 | Comercial     | t         | t         |
+|  4 | Cliente       | t         | t         |
+|  5 | Visitante     | t         | t         |
++----+---------------+-----------+-----------+
+(5 filas)
+
+=== F. Conteo de permisos por rol (sanity check de integridad) ===
++---------------+------------------+
+|     role      | permission_count |
++---------------+------------------+
+| Administrador |               44 |
+| Cliente       |                4 |
+| Comercial     |               12 |
+| Editor        |               12 |
+| Visitante     |                0 |
++---------------+------------------+
+(5 filas)
+
+=== G. Usuarios actuales (sin exponer password_hash) ===
++----+--------------------------------------+---------+-------------+---------------+--------------+-----------------------+--------+----------------+--------------------+----------------------------+
+| id |                 uuid                 | role_id | position_id |  first_name   |  last_name   |         email         | status | email_verified | two_factor_enabled |         created_at         |
++----+--------------------------------------+---------+-------------+---------------+--------------+-----------------------+--------+----------------+--------------------+----------------------------+
+|  1 | 4204db71-3e43-4d88-8ab2-40fe73772118 |       1 |           1 | Administrador | Jud Platform | admin@judplatform.com | ACTIVE | t              | f                  | 2026-08-06 17:34:19.529666 |
+|  2 | 97e1f46b-0334-4715-99af-f80091fab873 |       1 |           1 | Administrador | Jud Platform | adminin               | ACTIVE | t              | f                  | 2026-08-06 17:36:13.406283 |
++----+--------------------------------------+---------+-------------+---------------+--------------+-----------------------+--------+----------------+--------------------+----------------------------+
+(2 filas)
+
+=== H. api_clients actuales (sin exponer client_secret) ===
++----+----------------------+-----------+---------------------+------------+-------------------------------+
+| id |         name         | is_active | rate_limit_per_hour | expires_at |          created_at           |
++----+----------------------+-----------+---------------------+------------+-------------------------------+
+|  1 | Jud Platform Backend | t         |              100000 |            | 2026-08-06 17:35:31.136353-05 |
++----+----------------------+-----------+---------------------+------------+-------------------------------+
+(1 fila)
+
+=== I. Huerfanos: role_permissions -> roles/permissions ===
++-------------------------+
+| orphan_role_permissions |
++-------------------------+
+|                       0 |
++-------------------------+
+(1 fila)
+
+=== J. Huerfanos: users -> roles/positions ===
++--------------+
+| orphan_users |
++--------------+
+|            0 |
++--------------+
+(1 fila)
+
+=== K. Permisos duplicados (mismo permission_key) ===
++----------------+-------+
+| permission_key | count |
++----------------+-------+
++----------------+-------+
+(0 filas)
+
+=== L. Roles duplicados (mismo name) ===
++------+-------+
+| name | count |
++------+-------+
++------+-------+
+(0 filas)
+
+=== FIN ETAPA 2 ===

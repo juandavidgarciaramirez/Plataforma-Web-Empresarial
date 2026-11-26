@@ -1,0 +1,11 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js (temporal, no
+versionado).
+
+Statements ejecutados: 9 — todos OK, COMMIT aplicado.
+1. ALTER TABLE content.posts ADD COLUMN post_type/cover_image_url/author_name
+2-3. índice + comentario de post_type
+4. CREATE TABLE content.team_members
+5-7. comentario + 2 índices de team_members
+8. UPDATE catalog.services SET is_active=false (7 filas, plantilla genérica)
+9. INSERT catalog.services (5 filas, servicios reales de Capital Consulting)

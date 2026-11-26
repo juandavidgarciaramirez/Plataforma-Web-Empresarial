@@ -1,0 +1,6 @@
+Ejecutado vía Prisma Client (sin `psql` disponible en este entorno).
+
+--- crm.activities: tabla creada, 10 columnas, tipos/nullability según diseño ✔ PASS
+--- crm.lead_activities: sigue en 0 filas, sin cambios ✔ PASS
+
+CONCLUSIÓN: Etapa 6 (CRM Activities) — PASS. Sin bloqueos.

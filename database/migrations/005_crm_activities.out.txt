@@ -1,0 +1,8 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js (temporal, no
+versionado).
+
+Statements ejecutados: 5 — todos OK, COMMIT aplicado.
+1. CREATE TABLE crm.activities
+2. COMMENT ON TABLE
+3-5. 3 índices (author, related, occurred_at)

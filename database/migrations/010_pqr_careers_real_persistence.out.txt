@@ -1,0 +1,22 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js.
+
+Statements ejecutados: 7 — todos OK, COMMIT aplicado.
+1. ALTER TABLE pqr.requests (document_type, document_number)
+2. ALTER TABLE careers.job_positions ADD COLUMN department
+3. ALTER TABLE careers.job_positions ALTER COLUMN vacancies SET DEFAULT 1
+4. ALTER TABLE careers.candidates (city, education_level, relocation,
+   referral_source, sectors, salary_expectation_text)
+5. ALTER TABLE careers.applications (experience_range,
+   consent_policy_version, consent_text, consent_ip,
+   consent_communications, consent_share_cv, cv_file_id FK a
+   foundation.files)
+6. COMMENT ON COLUMN cv_file_id
+7. INSERT vacante placeholder "Base de Altos Potenciales"
+   (code='base-altos-potenciales')
+
+Fast-follow en la misma sesión (no en el archivo original, agregado al
+archivo para que quede documentado): ALTER TABLE careers.applications ADD
+COLUMN desired_position VARCHAR(200) — necesario para preservar el "cargo
+aspirado" en texto libre de las postulaciones generales sin vacante
+puntual real asociada.

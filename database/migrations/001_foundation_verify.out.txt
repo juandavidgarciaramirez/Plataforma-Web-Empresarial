@@ -1,0 +1,47 @@
+﻿--- foundation tables ---
+     tablename     
+-------------------
+ file_access_logs
+ file_categories
+ file_shares
+ file_tags
+ file_versions
+ files
+ storage_providers
+ system_settings
+(8 filas)
+
+--- core table count (expect 20) ---
+ count 
+-------
+    20
+(1 fila)
+
+--- foundation sequences (expect 8) ---
+ schemaname |       sequencename       
+------------+--------------------------
+ foundation | file_access_logs_id_seq
+ foundation | file_categories_id_seq
+ foundation | file_shares_id_seq
+ foundation | file_tags_id_seq
+ foundation | file_versions_id_seq
+ foundation | files_id_seq
+ foundation | storage_providers_id_seq
+ foundation | system_settings_id_seq
+(8 filas)
+
+--- FKs pointing into foundation.files ---
+         table_name          |                               definition                                
+-----------------------------+-------------------------------------------------------------------------
+ foundation.file_versions    | FOREIGN KEY (file_id) REFERENCES foundation.files(id) ON DELETE CASCADE
+ foundation.file_shares      | FOREIGN KEY (file_id) REFERENCES foundation.files(id) ON DELETE CASCADE
+ foundation.file_tags        | FOREIGN KEY (file_id) REFERENCES foundation.files(id) ON DELETE CASCADE
+ foundation.file_access_logs | FOREIGN KEY (file_id) REFERENCES foundation.files(id) ON DELETE CASCADE
+ crm.lead_files              | FOREIGN KEY (file_id) REFERENCES foundation.files(id) ON DELETE CASCADE
+(5 filas)
+
+--- leftover file% tables in core (expect none) ---
+ tablename 
+-----------
+(0 filas)
+

@@ -1,0 +1,22 @@
+Ejecutado vía Prisma Client (sin `psql` disponible en este entorno).
+
+--- total_lead_sources (esperado 10 + 4 = 14) ---
+14  ✔ PASS
+
+--- 4 fuentes nuevas presentes ---
+Chat en Vivo, PQR, Registro Manual, Yuri (Chatbot)  ✔ PASS
+
+--- empresa placeholder creada ---
+id=3, "Contactos Independientes (Sin Empresa)", is_active=true  ✔ PASS
+
+--- tablas nuevas presentes en crm ---
+opportunities, tasks  ✔ PASS
+
+--- columnas de crm.opportunities: 18, tipos y nullability según diseño ✔ PASS
+--- columnas de crm.tasks: 14, tipos y nullability según diseño ✔ PASS
+
+--- datos previos intactos ---
+crm.leads: 0 (sin cambios, seguía vacía)
+core.companies: 2 (1 real "Capital Consulting" + 1 placeholder nuevo)  ✔ PASS
+
+CONCLUSIÓN: Etapa 4 (catálogo CRM + tablas nuevas) — PASS. Sin bloqueos.

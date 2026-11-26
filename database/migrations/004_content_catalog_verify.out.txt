@@ -1,0 +1,13 @@
+Ejecutado vía Prisma Client (sin `psql` disponible en este entorno).
+
+--- content.posts: post_type/cover_image_url/author_name presentes con tipos correctos ✔ PASS
+--- content.team_members: tabla creada, 12 columnas, tipos/nullability según diseño ✔ PASS
+--- catalog.services: 12 filas totales (5 reales activas + 7 genéricas desactivadas) ✔ PASS
+    Reales activas: capital-learning, capital-mobility, capital-hse, capital-staffing,
+    capital-business-services — todas is_active=true.
+    Genéricas: CONSULTORIA_EMPRESARIAL, DESARROLLO_SOFTWARE, DESARROLLO_WEB,
+    AUTOMATIZACION_PROCESOS, TRANSFORMACION_DIGITAL, CRM, APLICACIONES_MOVILES —
+    todas is_active=false (preservadas, no borradas).
+--- content.posts sigue en 0 filas (sin pérdida de datos, no había ninguno) ✔ PASS
+
+CONCLUSIÓN: Etapa 5 (Content/CMS catálogo) — PASS. Sin bloqueos.

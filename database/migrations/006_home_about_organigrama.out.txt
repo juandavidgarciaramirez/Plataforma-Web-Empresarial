@@ -1,0 +1,33 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js (temporal, no
+versionado).
+
+Primer intento: ROLLBACK automático en el statement 13/30 — el comentario
+de content.hero_slides.items contenía un punto y coma dentro del literal de
+texto, que el splitter naive del script interpreta como fin de sentencia
+(mismo tipo de bug ya visto en la migración 004). Se corrigió el texto del
+comentario (se cambió el punto y coma por una coma) y se re-ejecutó desde
+cero — nada había quedado comprometido (transacción completa).
+
+Segundo intento: Statements ejecutados: 29 — todos OK, COMMIT aplicado.
+1.    ALTER TABLE content.team_members ADD COLUMN (10 columnas nuevas)
+2-4.  COMMENT ON COLUMN (org_level, parent_id, service_code)
+5-6.  2 índices nuevos (parent_id, org_level)
+7.    CREATE TABLE content.company_profile
+8-9.  COMMENT ON TABLE / COMMENT ON COLUMN
+10.   INSERT fila única (id=1) con el texto real de src/data/about.ts
+11.   CREATE TABLE content.hero_slides
+12-13. COMMENT ON TABLE / COMMENT ON COLUMN
+14-15. 2 índices (is_active, sort_order)
+16.   INSERT 5 slides reales (src/data/hero.ts)
+17.   CREATE TABLE content.company_values
+18-19. COMMENT ON TABLE / COMMENT ON COLUMN
+20-21. 2 índices
+22.   INSERT 5 valores reales (src/data/about.ts + ValuesGrid.tsx)
+23.   CREATE TABLE content.who_we_are_concepts
+24.   COMMENT ON TABLE
+25.   índice is_active
+26.   INSERT 3 conceptos reales (src/data/about.ts)
+27.   INSERT 14 permisos nuevos (cms.home/hero/values/concepts)
+28.   INSERT role_permissions -> Administrador (14 filas)
+29.   INSERT role_permissions -> Editor (14 filas)

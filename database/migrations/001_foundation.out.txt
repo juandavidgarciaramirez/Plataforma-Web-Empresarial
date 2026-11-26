@@ -1,0 +1,19 @@
+﻿BEGIN
+CREATE SCHEMA
+psql.exe : psql:database/migrations/001_foundation.sql:37: NOTICE:  el esquema «foundation» ya existe, omitiendo
+En línea: 8 Carácter: 1
++ & $psql -h $envVars['DB_HOST'] -p $envVars['DB_PORT'] -U $envVars['DB ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (psql:database/m...iste, omitiendo:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+COMMENT
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+COMMIT

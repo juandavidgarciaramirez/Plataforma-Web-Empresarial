@@ -1,0 +1,10 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js (temporal, no
+versionado).
+
+Statements ejecutados: 6 — todos OK, COMMIT aplicado.
+1. CREATE TABLE foundation.notifications
+2. COMMENT ON TABLE
+3-4. 2 índices (user_id+is_read, created_at)
+5. INSERT 5 permisos nuevos (foundation.files.*, foundation.settings.*)
+6. INSERT role_permissions -> Administrador (5 filas)

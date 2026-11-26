@@ -1,0 +1,44 @@
+Verificación ejecutada vía Prisma Client ($queryRawUnsafe, solo SELECT) +
+prueba funcional end-to-end en vivo.
+
+Columnas nuevas confirmadas en las 4 tablas (pqr.requests,
+careers.job_positions, careers.candidates, careers.applications).
+Vacante placeholder "Base de Altos Potenciales" confirmada
+(code='base-altos-potenciales', vacancies=0, status='OPEN'). Catálogos
+reales de PQR intactos (5 tipos, 8 estados, 4 prioridades — no se
+tocaron, solo se leyeron). Antes de la prueba: pqr.requests=0,
+careers.applications=0, careers.job_positions reales=0 (sin contar el
+placeholder).
+
+Prueba funcional en vivo (backend reiniciado con las 3 nuevas
+implementaciones Prisma — PqrModule, VacanciesModule, ApplicationsModule
+dejaron de usar sus repositorios en memoria):
+
+1. POST /pqr con adjunto real -> radicado real (PQR-20260831-0001),
+   GET /pqr/:radicado (público) y GET /pqr (admin) devuelven la PQR real
+   desde Postgres, con el adjunto enlazado por FK real
+   (pqr.request_attachments -> foundation.files,
+   attachmentUrl="/files/4/download").
+2. POST /careers/vacancies (admin) -> vacante real creada, aparece en
+   GET /careers/positions (público) inmediatamente.
+3. POST /careers/applications CON vacanteSlug -> candidato + postulación
+   reales creados, vacancyId apunta a la vacante real (no al
+   placeholder), toda la evidencia de consentimiento (IP, versión de
+   política, texto exacto, autorizaciones) y los campos ricos del
+   formulario (ciudad, experiencia, educación, reubicación, LinkedIn,
+   aspiración salarial, cómo se enteró, sectores) se leen de vuelta
+   correctamente. CV enlazado por FK real
+   (applications.cv_file_id -> foundation.files).
+4. POST /careers/applications SIN vacanteSlug -> cae correctamente al
+   placeholder (vacancyId=null hacia la app, igual que el comportamiento
+   anterior en memoria), "cargoAspirado" en texto libre preservado vía
+   `desired_position`.
+5. Notificaciones reales generadas para los 3 eventos (1 PQR + 2
+   postulaciones), confirmadas en GET /notifications.
+6. Todos los datos y archivos de prueba (2 candidatos, 2 postulaciones,
+   1 vacante, 1 PQR + su adjunto, 3 archivos en foundation.files, 9
+   notificaciones) limpiados después de verificar.
+
+Resultado: PASS. Los 3 módulos (PQR, Careers Applications, Vacancies)
+quedaron migrados de InMemory* a Prisma* real, cerrando el hallazgo de la
+Etapa 13.

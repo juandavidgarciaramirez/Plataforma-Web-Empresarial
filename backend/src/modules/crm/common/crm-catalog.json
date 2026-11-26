@@ -1,0 +1,94 @@
+{
+  "migration": {
+    "name": "015_crm_catalog_bootstrap",
+    "file": "database/migrations/015_crm_catalog_bootstrap.sql",
+    "verifyFile": "database/migrations/015_crm_catalog_bootstrap_verify.sql"
+  },
+  "defaultCountryIso2": "CO",
+  "leadSources": [
+    "Sitio Web",
+    "WhatsApp",
+    "Correo Electrónico",
+    "Teléfono",
+    "Facebook",
+    "Instagram",
+    "LinkedIn",
+    "Referido",
+    "Contacto Directo",
+    "Otro",
+    "Yuri (Chatbot)",
+    "Registro Manual",
+    "Chat en Vivo",
+    "PQR"
+  ],
+  "leadStatuses": [
+    "Nuevo",
+    "Contactado",
+    "En Gestión",
+    "Esperando Cliente",
+    "Propuesta Enviada",
+    "Negociación",
+    "Ganado",
+    "Perdido",
+    "No Interesado",
+    "Suspendido"
+  ],
+  "pipeline": {
+    "name": "Ventas",
+    "stages": [
+      { "name": "Nuevo", "order": 1, "isClosed": false, "isSuccess": false },
+      { "name": "Contactado", "order": 2, "isClosed": false, "isSuccess": false },
+      { "name": "Calificado", "order": 3, "isClosed": false, "isSuccess": false },
+      { "name": "Perdido", "order": 4, "isClosed": true, "isSuccess": false },
+      { "name": "Ganado", "order": 5, "isClosed": true, "isSuccess": true }
+    ]
+  },
+  "noCompanyPlaceholder": {
+    "legalName": "Contactos Independientes (Sin Empresa)",
+    "commercialName": "Sin Empresa"
+  },
+  "ownCompany": {
+    "legalName": "Capital Consulting"
+  },
+  "appSources": {
+    "YURI": "Yuri (Chatbot)",
+    "WEBSITE_FORM": "Sitio Web",
+    "REFERRAL": "Referido",
+    "MANUAL": "Registro Manual",
+    "CHAT": "Chat en Vivo",
+    "PQR": "PQR"
+  },
+  "appStatuses": {
+    "NEW": { "status": "Nuevo", "stage": "Nuevo" },
+    "CONTACTED": { "status": "Contactado", "stage": "Contactado" },
+    "QUALIFIED": { "status": "En Gestión", "stage": "Calificado" },
+    "DISQUALIFIED": { "status": "No Interesado", "stage": "Perdido" },
+    "CONVERTED": { "status": "Ganado", "stage": "Ganado" }
+  },
+  "statusToApp": {
+    "Nuevo": "NEW",
+    "Contactado": "CONTACTED",
+    "En Gestión": "QUALIFIED",
+    "Esperando Cliente": "CONTACTED",
+    "Propuesta Enviada": "QUALIFIED",
+    "Negociación": "QUALIFIED",
+    "Ganado": "CONVERTED",
+    "Perdido": "DISQUALIFIED",
+    "No Interesado": "DISQUALIFIED",
+    "Suspendido": "DISQUALIFIED"
+  },
+  "platformCatalog": {
+    "migration": {
+      "name": "016_platform_catalog_bootstrap",
+      "file": "database/migrations/016_platform_catalog_bootstrap.sql",
+      "verifyFile": "database/migrations/016_platform_catalog_bootstrap_verify.sql"
+    },
+    "pqrTypes": ["PETICION", "QUEJA", "RECLAMO", "SUGERENCIA", "FELICITACION"],
+    "pqrStatuses": ["RECEIVED", "IN_PROGRESS", "CLOSED"],
+    "pqrPriorities": ["MEDIUM"]
+  },
+  "yuri": {
+    "intentCodes": ["GREETING", "SERVICE_INQUIRY", "QUOTE", "PQR", "CAREERS", "CONTACT", "HUMAN_AGENT", "UNKNOWN"],
+    "serviceCodes": ["capital-hse", "capital-learning", "capital-mobility", "capital-staffing", "capital-business-services"]
+  }
+}

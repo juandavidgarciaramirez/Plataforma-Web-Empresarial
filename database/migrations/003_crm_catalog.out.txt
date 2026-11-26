@@ -1,0 +1,9 @@
+Ejecutado vía Prisma Client dentro de una única transacción (sin `psql`
+disponible en este entorno). Script: run-sql-migration.js (temporal, no
+versionado).
+
+Statements ejecutados: 16 — todos OK, COMMIT aplicado.
+1. INSERT crm.lead_sources (4 filas: Yuri (Chatbot), Registro Manual, Chat en Vivo, PQR)
+2. INSERT core.companies (1 fila: "Contactos Independientes (Sin Empresa)")
+3-10. CREATE TABLE crm.opportunities + COMMENT + 5 índices
+11-16. CREATE TABLE crm.tasks + COMMENT + 4 índices

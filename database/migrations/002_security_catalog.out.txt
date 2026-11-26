@@ -1,0 +1,29 @@
+Ejecutado vía Prisma Client dentro de una única transacción (no hay `psql`
+disponible en este entorno; ejecución equivalente statement por statement,
+BEGIN/COMMIT gestionado por la transacción de Prisma en vez de por el propio
+archivo .sql). Script: run-sql-migration.js (temporal, no versionado).
+
+Statements a ejecutar: 7
+
+--- [1/7] INSERT INTO security.permissions (...) VALUES (32 filas) ---
+OK, filas afectadas: 32
+
+--- [2/7] INSERT INTO security.roles (...) VALUES ('Recursos Humanos', 'Soporte') ---
+OK, filas afectadas: 2
+
+--- [3/7] INSERT INTO security.role_permissions (Administrador += 32 nuevos) ---
+OK, filas afectadas: 32
+
+--- [4/7] INSERT INTO security.role_permissions (Editor += cms.team.*, cms.news.*) ---
+OK, filas afectadas: 8
+
+--- [5/7] INSERT INTO security.role_permissions (Comercial += resto de CRM) ---
+OK, filas afectadas: 19
+
+--- [6/7] INSERT INTO security.role_permissions (Recursos Humanos, nuevo) ---
+OK, filas afectadas: 4
+
+--- [7/7] INSERT INTO security.role_permissions (Soporte, nuevo) ---
+OK, filas afectadas: 2
+
+✔ Transacción completa, COMMIT aplicado.

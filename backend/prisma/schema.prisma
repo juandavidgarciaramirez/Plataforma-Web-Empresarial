@@ -1,0 +1,2717 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "./generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["analytics", "audit", "careers", "catalog", "chat", "content", "core", "crm", "foundation", "pqr", "security"]
+}
+
+model address_types {
+  id                BigInt              @id @default(autoincrement())
+  code              String              @unique(map: "uk_catalog_address_type_code") @db.VarChar(50)
+  name              String              @db.VarChar(100)
+  description       String?
+  is_active         Boolean             @default(true)
+  sort_order        Int                 @default(0) @db.SmallInt
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime            @default(now()) @db.Timestamptz(6)
+  company_addresses company_addresses[]
+
+  @@index([is_active], map: "idx_address_types_active")
+  @@schema("catalog")
+}
+
+model company_types {
+  id          BigInt      @id @default(autoincrement())
+  uuid        String      @unique(map: "uk_catalog_company_type_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String      @unique(map: "uk_catalog_company_type_code") @db.VarChar(50)
+  name        String      @db.VarChar(100)
+  description String?
+  is_active   Boolean     @default(true)
+  sort_order  Int         @default(0) @db.SmallInt
+  created_at  DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime    @default(now()) @db.Timestamptz(6)
+  companies   companies[]
+
+  @@index([is_active], map: "idx_company_types_active")
+  @@schema("catalog")
+}
+
+model contact_sources {
+  id          BigInt     @id @default(autoincrement())
+  uuid        String     @unique(map: "uk_catalog_contact_source_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String     @unique(map: "uk_catalog_contact_source_code") @db.VarChar(50)
+  name        String     @db.VarChar(100)
+  description String?
+  is_active   Boolean    @default(true)
+  sort_order  Int        @default(0) @db.SmallInt
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  contacts    contacts[]
+
+  @@index([is_active], map: "idx_contact_sources_active")
+  @@schema("catalog")
+}
+
+model email_types {
+  id             BigInt           @id @default(autoincrement())
+  code           String           @unique(map: "uk_catalog_email_type_code") @db.VarChar(50)
+  name           String           @db.VarChar(100)
+  description    String?
+  is_active      Boolean          @default(true)
+  sort_order     Int              @default(0) @db.SmallInt
+  created_at     DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime         @default(now()) @db.Timestamptz(6)
+  contact_emails contact_emails[]
+
+  @@index([is_active], map: "idx_email_types_active")
+  @@schema("catalog")
+}
+
+model industries {
+  id          BigInt      @id @default(autoincrement())
+  uuid        String      @unique(map: "uk_catalog_industry_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String      @unique(map: "uk_catalog_industry_code") @db.VarChar(50)
+  name        String      @db.VarChar(150)
+  description String?
+  is_active   Boolean     @default(true)
+  sort_order  Int         @default(0) @db.SmallInt
+  created_at  DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime    @default(now()) @db.Timestamptz(6)
+  companies   companies[]
+
+  @@index([is_active], map: "idx_industries_active")
+  @@schema("catalog")
+}
+
+model lead_priorities {
+  id          BigInt   @id @default(autoincrement())
+  code        String   @unique(map: "uk_catalog_lead_priority_code") @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?
+  level       Int      @default(0) @db.SmallInt
+  is_active   Boolean  @default(true)
+  sort_order  Int      @default(0) @db.SmallInt
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_lead_priorities_active")
+  @@schema("catalog")
+}
+
+model lead_temperatures {
+  id          BigInt   @id @default(autoincrement())
+  code        String   @unique(map: "uk_catalog_lead_temperature_code") @db.VarChar(50)
+  name        String   @db.VarChar(100)
+  description String?
+  level       Int      @default(0) @db.SmallInt
+  is_active   Boolean  @default(true)
+  sort_order  Int      @default(0) @db.SmallInt
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_lead_temperatures_active")
+  @@schema("catalog")
+}
+
+model phone_types {
+  id             BigInt           @id @default(autoincrement())
+  code           String           @unique(map: "uk_catalog_phone_type_code") @db.VarChar(50)
+  name           String           @db.VarChar(100)
+  description    String?
+  is_active      Boolean          @default(true)
+  sort_order     Int              @default(0) @db.SmallInt
+  created_at     DateTime         @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime         @default(now()) @db.Timestamptz(6)
+  contact_phones contact_phones[]
+
+  @@index([is_active], map: "idx_phone_types_active")
+  @@schema("catalog")
+}
+
+model rejection_reasons {
+  id          BigInt   @id @default(autoincrement())
+  uuid        String   @unique(map: "uk_catalog_rejection_reason_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String   @unique(map: "uk_catalog_rejection_reason_code") @db.VarChar(50)
+  name        String   @db.VarChar(150)
+  description String?
+  is_active   Boolean  @default(true)
+  sort_order  Int      @default(0) @db.SmallInt
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_rejection_reasons_active")
+  @@schema("catalog")
+}
+
+model service_categories {
+  id          BigInt     @id @default(autoincrement())
+  uuid        String     @unique(map: "uk_catalog_service_category_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code        String     @unique(map: "uk_catalog_service_category_code") @db.VarChar(50)
+  name        String     @db.VarChar(150)
+  description String?
+  icon        String?    @db.VarChar(100)
+  is_active   Boolean    @default(true)
+  sort_order  Int        @default(0) @db.SmallInt
+  created_at  DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime   @default(now()) @db.Timestamptz(6)
+  services    services[]
+
+  @@index([is_active], map: "idx_service_categories_active")
+  @@schema("catalog")
+}
+
+model services {
+  id                   BigInt                 @id @default(autoincrement())
+  uuid                 String                 @unique(map: "uk_catalog_service_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  category_id          BigInt?
+  code                 String                 @unique(map: "uk_catalog_service_code") @db.VarChar(50)
+  name                 String                 @db.VarChar(150)
+  short_description    String?
+  description          String?
+  icon                 String?                @db.VarChar(100)
+  is_featured          Boolean                @default(false)
+  is_active            Boolean                @default(true)
+  sort_order           Int                    @default(0) @db.SmallInt
+  created_at           DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime               @default(now()) @db.Timestamptz(6)
+  image_url            String?
+  image_alt            String?                @db.VarChar(300)
+  service_categories   service_categories?    @relation(fields: [category_id], references: [id], onUpdate: NoAction, map: "fk_catalog_service_category")
+  chat_context         chat_context[]
+  chat_messages        chat_messages[]
+  chat_service_matches chat_service_matches[]
+  hero_slides          hero_slides[]
+  team_members         team_members[]
+
+  @@index([is_active], map: "idx_services_active")
+  @@index([category_id], map: "idx_services_category")
+  @@schema("catalog")
+}
+
+model social_networks {
+  id         BigInt   @id @default(autoincrement())
+  uuid       String   @unique(map: "uk_catalog_social_network_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code       String   @unique(map: "uk_catalog_social_network_code") @db.VarChar(50)
+  name       String   @db.VarChar(100)
+  icon       String?  @db.VarChar(100)
+  base_url   String?
+  is_active  Boolean  @default(true)
+  sort_order Int      @default(0) @db.SmallInt
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_social_networks_active")
+  @@schema("catalog")
+}
+
+model core_audit_logs {
+  id          BigInt    @id @default(autoincrement())
+  user_id     BigInt?
+  module      String?   @db.VarChar(80)
+  entity_name String?   @db.VarChar(80)
+  entity_id   BigInt?
+  action      String?   @db.VarChar(50)
+  old_values  Json?
+  new_values  Json?
+  ip_address  String?   @db.VarChar(45)
+  user_agent  String?
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  users       users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_audit_user")
+
+  @@map("audit_logs")
+  @@schema("core")
+}
+
+model branches {
+  id                BigInt              @id @default(autoincrement())
+  uuid              String              @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id        BigInt
+  city_id           BigInt?
+  name              String              @db.VarChar(150)
+  code              String?             @db.VarChar(20)
+  manager_name      String?             @db.VarChar(150)
+  opening_hours     String?             @db.VarChar(150)
+  latitude          Decimal?            @db.Decimal(10, 7)
+  longitude         Decimal?            @db.Decimal(10, 7)
+  is_main           Boolean?            @default(false)
+  is_active         Boolean?            @default(true)
+  created_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime?           @default(now()) @db.Timestamptz(6)
+  cities            cities?             @relation(fields: [city_id], references: [id], onUpdate: NoAction, map: "fk_branch_city")
+  companies         companies           @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_branch_company")
+  company_addresses company_addresses[]
+  contacts          contacts[]
+
+  @@index([is_active], map: "idx_branch_active")
+  @@index([city_id], map: "idx_branch_city")
+  @@index([company_id], map: "idx_branch_company")
+  @@schema("core")
+}
+
+model cities {
+  id                BigInt              @id @default(autoincrement())
+  uuid              String              @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  state_id          BigInt
+  name              String              @db.VarChar(120)
+  postal_code       String?             @db.VarChar(20)
+  latitude          Decimal?            @db.Decimal(10, 7)
+  longitude         Decimal?            @db.Decimal(10, 7)
+  is_active         Boolean             @default(true)
+  created_at        DateTime            @default(now()) @db.Timestamptz(6)
+  updated_at        DateTime            @default(now()) @db.Timestamptz(6)
+  divipola_code     String              @unique(map: "uk_cities_divipola_code") @db.VarChar(5)
+  candidates        candidates[]
+  branches          branches[]
+  states            states              @relation(fields: [state_id], references: [id], onUpdate: NoAction, map: "fk_cities_state")
+  company_addresses company_addresses[]
+  contact_addresses contact_addresses[]
+
+  @@unique([state_id, name], map: "uk_city_state_name")
+  @@index([name], map: "idx_cities_name")
+  @@index([state_id], map: "idx_cities_state")
+  @@index([divipola_code], map: "idx_city_divipola")
+  @@schema("core")
+}
+
+model companies {
+  id                                          BigInt                    @id @default(autoincrement())
+  uuid                                        String                    @unique(map: "uk_company_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  country_id                                  BigInt
+  legal_name                                  String                    @db.VarChar(200)
+  commercial_name                             String?                   @db.VarChar(200)
+  tax_id                                      String?                   @unique(map: "uk_company_tax") @db.VarChar(30)
+  verification_digit                          String?                   @db.VarChar(5)
+  company_type                                String?                   @db.VarChar(100)
+  industry                                    String?                   @db.VarChar(150)
+  website                                     String?                   @db.VarChar(255)
+  email                                       String?                   @db.VarChar(255)
+  phone                                       String?                   @db.VarChar(50)
+  logo_url                                    String?
+  cover_image_url                             String?
+  description                                 String?
+  slogan                                      String?                   @db.VarChar(255)
+  founded_at                                  DateTime?                 @db.Date
+  employees_count                             Int?                      @default(0)
+  primary_color                               String?                   @db.VarChar(20)
+  secondary_color                             String?                   @db.VarChar(20)
+  linkedin_url                                String?
+  facebook_url                                String?
+  instagram_url                               String?
+  youtube_url                                 String?
+  tiktok_url                                  String?
+  is_active                                   Boolean                   @default(true)
+  created_at                                  DateTime                  @default(now()) @db.Timestamptz(6)
+  updated_at                                  DateTime                  @default(now()) @db.Timestamptz(6)
+  company_type_id                             BigInt?
+  industry_id                                 BigInt?
+  branches                                    branches[]
+  countries                                   countries                 @relation(fields: [country_id], references: [id], onUpdate: NoAction, map: "fk_company_country")
+  industries                                  industries?               @relation(fields: [industry_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_company_industry")
+  company_types                               company_types?            @relation(fields: [company_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_company_type")
+  company_addresses                           company_addresses[]
+  company_emails                              company_emails[]
+  company_phones                              company_phones[]
+  company_settings                            company_settings?
+  company_social_networks                     company_social_networks[]
+  contacts                                    contacts[]
+  lead_activities                             lead_activities[]
+  lead_notes                                  lead_notes[]
+  lead_tags                                   lead_tags[]
+  leads_leads_converted_company_idTocompanies leads[]                   @relation("leads_converted_company_idTocompanies")
+  leads_leads_company_idTocompanies           leads[]                   @relation("leads_company_idTocompanies")
+  opportunities                               opportunities[]
+  files                                       files[]
+  requests                                    requests[]
+
+  @@index([is_active], map: "idx_company_active")
+  @@index([company_type_id], map: "idx_company_company_type")
+  @@index([country_id], map: "idx_company_country")
+  @@index([industry_id], map: "idx_company_industry")
+  @@index([legal_name], map: "idx_company_name")
+  @@schema("core")
+}
+
+model company_addresses {
+  id              BigInt         @id @default(autoincrement())
+  uuid            String         @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id      BigInt
+  branch_id       BigInt?
+  city_id         BigInt?
+  address         String         @db.VarChar(300)
+  neighborhood    String?        @db.VarChar(150)
+  postal_code     String?        @db.VarChar(20)
+  latitude        Decimal?       @db.Decimal(10, 7)
+  longitude       Decimal?       @db.Decimal(10, 7)
+  address_type    String?        @db.VarChar(50)
+  is_primary      Boolean?       @default(false)
+  is_active       Boolean?       @default(true)
+  created_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  address_type_id BigInt?
+  branches        branches?      @relation(fields: [branch_id], references: [id], onUpdate: NoAction, map: "fk_company_address_branch")
+  cities          cities?        @relation(fields: [city_id], references: [id], onUpdate: NoAction, map: "fk_company_address_city")
+  companies       companies      @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_company_address_company")
+  address_types   address_types? @relation(fields: [address_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_company_address_type")
+
+  @@index([city_id], map: "idx_company_address_city")
+  @@index([company_id], map: "idx_company_address_company")
+  @@index([address_type_id], map: "idx_company_address_type")
+  @@schema("core")
+}
+
+model company_emails {
+  id          BigInt    @id @default(autoincrement())
+  company_id  BigInt
+  email       String    @db.VarChar(255)
+  description String?   @db.VarChar(100)
+  is_primary  Boolean?  @default(false)
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  companies   companies @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_company_email")
+
+  @@index([company_id], map: "idx_company_email_company")
+  @@schema("core")
+}
+
+model company_phones {
+  id          BigInt    @id @default(autoincrement())
+  company_id  BigInt
+  phone       String    @db.VarChar(40)
+  extension   String?   @db.VarChar(20)
+  whatsapp    Boolean?  @default(false)
+  description String?   @db.VarChar(100)
+  is_primary  Boolean?  @default(false)
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  companies   companies @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_company_phone")
+
+  @@index([company_id], map: "idx_company_phone_company")
+  @@schema("core")
+}
+
+model company_settings {
+  id                  BigInt    @id @default(autoincrement())
+  company_id          BigInt    @unique
+  company_logo        String?
+  favicon             String?
+  primary_color       String?   @db.VarChar(20)
+  secondary_color     String?   @db.VarChar(20)
+  accent_color        String?   @db.VarChar(20)
+  website             String?   @db.VarChar(255)
+  timezone            String?   @db.VarChar(80)
+  language            String?   @db.VarChar(20)
+  currency            String?   @db.VarChar(20)
+  date_format         String?   @db.VarChar(30)
+  time_format         String?   @db.VarChar(20)
+  smtp_host           String?   @db.VarChar(255)
+  smtp_port           Int?
+  smtp_user           String?   @db.VarChar(255)
+  smtp_password       String?
+  smtp_ssl            Boolean?  @default(true)
+  google_analytics_id String?   @db.VarChar(100)
+  google_tag_manager  String?   @db.VarChar(100)
+  meta_pixel          String?   @db.VarChar(100)
+  whatsapp_number     String?   @db.VarChar(50)
+  google_maps_url     String?
+  maintenance_mode    Boolean?  @default(false)
+  created_at          DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime? @default(now()) @db.Timestamptz(6)
+  companies           companies @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_company_settings")
+
+  @@schema("core")
+}
+
+model company_social_networks {
+  id                BigInt    @id @default(autoincrement())
+  uuid              String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id        BigInt
+  platform          String    @db.VarChar(50)
+  username          String?   @db.VarChar(150)
+  url               String
+  is_primary        Boolean?  @default(false)
+  is_active         Boolean?  @default(true)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  social_network_id BigInt?
+  companies         companies @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_company_social")
+
+  @@index([company_id], map: "idx_company_social_company")
+  @@index([social_network_id], map: "idx_company_social_network")
+  @@schema("core")
+}
+
+model contact_addresses {
+  id          BigInt    @id @default(autoincrement())
+  contact_id  BigInt
+  city_id     BigInt?
+  address     String
+  postal_code String?   @db.VarChar(20)
+  latitude    Decimal?  @db.Decimal(10, 7)
+  longitude   Decimal?  @db.Decimal(10, 7)
+  type        String?   @db.VarChar(50)
+  is_primary  Boolean?  @default(false)
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  contacts    contacts  @relation(fields: [contact_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_contact_address")
+  cities      cities?   @relation(fields: [city_id], references: [id], onUpdate: NoAction, map: "fk_contact_address_city")
+
+  @@index([contact_id], map: "idx_contact_address_contact")
+  @@schema("core")
+}
+
+model contact_emails {
+  id            BigInt       @id @default(autoincrement())
+  uuid          String       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  contact_id    BigInt
+  email         String       @unique(map: "idx_contact_email_unique") @db.VarChar(255)
+  email_type    String?      @db.VarChar(50)
+  is_primary    Boolean?     @default(false)
+  is_verified   Boolean?     @default(false)
+  is_active     Boolean?     @default(true)
+  created_at    DateTime?    @default(now()) @db.Timestamptz(6)
+  email_type_id BigInt?
+  contacts      contacts     @relation(fields: [contact_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_contact_email")
+  email_types   email_types? @relation(fields: [email_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_contact_email_type")
+
+  @@index([contact_id], map: "idx_contact_email_contact")
+  @@index([email_type_id], map: "idx_contact_email_type")
+  @@schema("core")
+}
+
+model contact_phones {
+  id            BigInt       @id @default(autoincrement())
+  contact_id    BigInt
+  phone         String       @db.VarChar(40)
+  extension     String?      @db.VarChar(20)
+  type          String?      @db.VarChar(50)
+  whatsapp      Boolean?     @default(false)
+  is_primary    Boolean?     @default(false)
+  is_active     Boolean?     @default(true)
+  created_at    DateTime?    @default(now()) @db.Timestamptz(6)
+  phone_type_id BigInt?
+  contacts      contacts     @relation(fields: [contact_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_contact_phone")
+  phone_types   phone_types? @relation(fields: [phone_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_contact_phone_type")
+
+  @@index([contact_id], map: "idx_contact_phone_contact")
+  @@index([phone_type_id], map: "idx_contact_phone_type")
+  @@schema("core")
+}
+
+model contact_social_networks {
+  id                BigInt    @id @default(autoincrement())
+  contact_id        BigInt
+  platform          String    @db.VarChar(50)
+  username          String?   @db.VarChar(150)
+  url               String?
+  is_primary        Boolean?  @default(false)
+  is_active         Boolean?  @default(true)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+  social_network_id BigInt?
+  contacts          contacts  @relation(fields: [contact_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_contact_social")
+
+  @@index([contact_id], map: "idx_contact_social_contact")
+  @@index([social_network_id], map: "idx_contact_social_network")
+  @@schema("core")
+}
+
+model contacts {
+  id                                         BigInt                    @id @default(autoincrement())
+  uuid                                       String                    @unique(map: "uk_contact_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id                                 BigInt
+  branch_id                                  BigInt?
+  first_name                                 String                    @db.VarChar(100)
+  middle_name                                String?                   @db.VarChar(100)
+  last_name                                  String                    @db.VarChar(100)
+  second_last_name                           String?                   @db.VarChar(100)
+  full_name                                  String?                   @db.VarChar(300)
+  identification_type                        String?                   @db.VarChar(20)
+  identification_number                      String?                   @db.VarChar(50)
+  birth_date                                 DateTime?                 @db.Date
+  gender                                     String?                   @db.VarChar(20)
+  job_title                                  String?                   @db.VarChar(150)
+  company_name                               String?                   @db.VarChar(200)
+  email                                      String?                   @db.VarChar(255)
+  phone                                      String?                   @db.VarChar(50)
+  mobile_phone                               String?                   @db.VarChar(50)
+  whatsapp                                   String?                   @db.VarChar(50)
+  website                                    String?                   @db.VarChar(255)
+  notes                                      String?
+  source                                     String?                   @db.VarChar(100)
+  is_customer                                Boolean?                  @default(false)
+  is_supplier                                Boolean?                  @default(false)
+  is_employee                                Boolean?                  @default(false)
+  is_candidate                               Boolean?                  @default(false)
+  is_active                                  Boolean?                  @default(true)
+  created_at                                 DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at                                 DateTime?                 @default(now()) @db.Timestamptz(6)
+  source_id                                  BigInt?
+  contact_addresses                          contact_addresses[]
+  contact_emails                             contact_emails[]
+  contact_phones                             contact_phones[]
+  contact_social_networks                    contact_social_networks[]
+  branches                                   branches?                 @relation(fields: [branch_id], references: [id], onUpdate: NoAction, map: "fk_contact_branch")
+  companies                                  companies                 @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_contact_company")
+  contact_sources                            contact_sources?          @relation(fields: [source_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_contact_source")
+  lead_activities                            lead_activities[]
+  leads_leads_converted_contact_idTocontacts leads[]                   @relation("leads_converted_contact_idTocontacts")
+  leads_leads_contact_idTocontacts           leads[]                   @relation("leads_contact_idTocontacts")
+  opportunities                              opportunities[]
+  requests                                   requests[]
+
+  @@index([branch_id], map: "idx_contact_branch")
+  @@index([company_id], map: "idx_contact_company")
+  @@index([identification_number], map: "idx_contact_document")
+  @@index([email], map: "idx_contact_email")
+  @@index([last_name, first_name], map: "idx_contact_name")
+  @@index([source_id], map: "idx_contact_source")
+  @@schema("core")
+}
+
+model countries {
+  id            BigInt      @id @default(autoincrement())
+  uuid          String      @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  iso2          String      @unique @db.Char(2)
+  iso3          String?     @unique @db.Char(3)
+  name          String      @db.VarChar(120)
+  phone_code    String?     @db.VarChar(10)
+  currency_code String?     @db.VarChar(10)
+  currency_name String?     @db.VarChar(60)
+  is_active     Boolean     @default(true)
+  created_at    DateTime    @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime    @default(now()) @db.Timestamptz(6)
+  companies     companies[]
+  holidays      holidays[]
+  states        states[]
+
+  @@index([name], map: "idx_country_name")
+  @@schema("core")
+}
+
+model currencies {
+  id             BigInt   @id @default(autoincrement())
+  code           String   @unique @db.Char(3)
+  name           String   @db.VarChar(80)
+  symbol         String?  @db.VarChar(10)
+  decimal_places Int?     @default(2) @db.SmallInt
+  is_default     Boolean? @default(false)
+  is_active      Boolean? @default(true)
+
+  @@schema("core")
+}
+
+model holidays {
+  id           BigInt     @id @default(autoincrement())
+  country_id   BigInt?
+  holiday_date DateTime   @db.Date
+  name         String?    @db.VarChar(150)
+  is_recurring Boolean?   @default(true)
+  countries    countries? @relation(fields: [country_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_holiday_country")
+
+  @@schema("core")
+}
+
+model languages {
+  id          BigInt   @id @default(autoincrement())
+  code        String?  @unique @db.VarChar(10)
+  name        String?  @db.VarChar(80)
+  native_name String?  @db.VarChar(80)
+  is_default  Boolean? @default(false)
+  is_active   Boolean? @default(true)
+
+  @@schema("core")
+}
+
+model states {
+  id            BigInt    @id @default(autoincrement())
+  uuid          String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  country_id    BigInt
+  code          String?   @db.VarChar(10)
+  name          String    @db.VarChar(120)
+  is_active     Boolean   @default(true)
+  created_at    DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime  @default(now()) @db.Timestamptz(6)
+  divipola_code String?   @db.VarChar(2)
+  cities        cities[]
+  countries     countries @relation(fields: [country_id], references: [id], onUpdate: NoAction, map: "fk_states_country")
+
+  @@index([country_id], map: "idx_states_country")
+  @@index([name], map: "idx_states_name")
+  @@schema("core")
+}
+
+model timezones {
+  id         BigInt   @id @default(autoincrement())
+  name       String?  @unique(map: "uk_timezones_name") @db.VarChar(120)
+  utc_offset String?  @db.VarChar(10)
+  is_active  Boolean? @default(true)
+
+  @@schema("core")
+}
+
+model activity_types {
+  id              BigInt            @id @default(autoincrement())
+  name            String            @unique @db.VarChar(80)
+  icon            String?           @db.VarChar(50)
+  color           String?           @db.VarChar(20)
+  description     String?
+  active          Boolean?          @default(true)
+  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  lead_activities lead_activities[]
+
+  @@schema("crm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model lead_activities {
+  id                                            BigInt         @id @default(autoincrement())
+  uuid                                          String         @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lead_id                                       BigInt
+  activity_type_id                              BigInt
+  assigned_user_id                              BigInt?
+  company_id                                    BigInt?
+  contact_id                                    BigInt?
+  title                                         String         @db.VarChar(250)
+  description                                   String?
+  activity_date                                 DateTime       @db.Timestamptz(6)
+  start_date                                    DateTime?      @db.Timestamptz(6)
+  end_date                                      DateTime?      @db.Timestamptz(6)
+  duration_minutes                              Int?
+  completed                                     Boolean?       @default(false)
+  completion_date                               DateTime?      @db.Timestamptz(6)
+  reminder_date                                 DateTime?      @db.Timestamptz(6)
+  location                                      String?        @db.VarChar(250)
+  meeting_url                                   String?        @db.VarChar(500)
+  result                                        String?
+  observations                                  String?
+  created_by                                    BigInt
+  updated_by                                    BigInt?
+  created_at                                    DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at                                    DateTime?      @default(now()) @db.Timestamptz(6)
+  deleted_at                                    DateTime?      @db.Timestamptz(6)
+  companies                                     companies?     @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_company")
+  contacts                                      contacts?      @relation(fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_contact")
+  users_lead_activities_created_byTousers       users          @relation("lead_activities_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_created")
+  leads                                         leads          @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_lead")
+  activity_types                                activity_types @relation(fields: [activity_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_type")
+  users_lead_activities_updated_byTousers       users?         @relation("lead_activities_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_updated")
+  users_lead_activities_assigned_user_idTousers users?         @relation("lead_activities_assigned_user_idTousers", fields: [assigned_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_activity_user")
+
+  @@index([completed], map: "idx_activity_completed")
+  @@index([activity_date], map: "idx_activity_date")
+  @@index([lead_id], map: "idx_activity_lead")
+  @@index([activity_type_id], map: "idx_activity_type")
+  @@index([assigned_user_id], map: "idx_activity_user")
+  @@schema("crm")
+}
+
+model lead_files {
+  id          BigInt    @id @default(autoincrement())
+  uuid        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lead_id     BigInt
+  file_id     BigInt
+  description String?
+  uploaded_by BigInt?
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  files       files     @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_file")
+  leads       leads     @relation(fields: [lead_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_lead_file")
+  users       users?    @relation(fields: [uploaded_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_uploaded_by")
+
+  @@unique([lead_id, file_id], map: "uq_lead_file")
+  @@index([file_id], map: "idx_file")
+  @@index([lead_id], map: "idx_lead_file")
+  @@schema("crm")
+}
+
+model lead_notes {
+  id                                 BigInt     @id @default(autoincrement())
+  uuid                               String     @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  lead_id                            BigInt
+  company_id                         BigInt?
+  title                              String?    @db.VarChar(200)
+  note                               String
+  is_private                         Boolean?   @default(true)
+  pinned                             Boolean?   @default(false)
+  created_by                         BigInt
+  updated_by                         BigInt?
+  created_at                         DateTime?  @default(now()) @db.Timestamptz(6)
+  updated_at                         DateTime?  @default(now()) @db.Timestamptz(6)
+  deleted_at                         DateTime?  @db.Timestamptz(6)
+  companies                          companies? @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_note_company")
+  users_lead_notes_created_byTousers users      @relation("lead_notes_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_note_created_by")
+  leads                              leads      @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_note_lead")
+  users_lead_notes_updated_byTousers users?     @relation("lead_notes_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_note_updated_by")
+
+  @@index([company_id], map: "idx_note_company")
+  @@index([created_by], map: "idx_note_created")
+  @@index([lead_id], map: "idx_note_lead")
+  @@index([is_private], map: "idx_note_private")
+  @@schema("crm")
+}
+
+model lead_sources {
+  id          BigInt    @id @default(autoincrement())
+  uuid        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String    @unique(map: "idx_lead_source_name") @db.VarChar(120)
+  description String?
+  icon        String?   @db.VarChar(100)
+  color       String?   @db.VarChar(20)
+  is_active   Boolean   @default(true)
+  sort_order  Int?      @default(1) @db.SmallInt
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  leads       leads[]
+
+  @@schema("crm")
+}
+
+model lead_statuses {
+  id          BigInt    @id @default(autoincrement())
+  uuid        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String    @unique(map: "idx_lead_statuses_name") @db.VarChar(100)
+  description String?
+  color       String?   @db.VarChar(20)
+  is_final    Boolean?  @default(false)
+  is_success  Boolean?  @default(false)
+  sort_order  Int?      @default(1) @db.SmallInt
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime? @default(now()) @db.Timestamptz(6)
+  leads       leads[]
+
+  @@schema("crm")
+}
+
+model lead_tag_relations {
+  id         BigInt    @id @default(autoincrement())
+  lead_id    BigInt
+  tag_id     BigInt
+  created_by BigInt?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  leads      leads     @relation(fields: [lead_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_relation_lead")
+  lead_tags  lead_tags @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_relation_tag")
+  users      users?    @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_relation_user")
+
+  @@unique([lead_id, tag_id], map: "uq_lead_tag")
+  @@index([lead_id], map: "idx_relation_lead")
+  @@index([tag_id], map: "idx_relation_tag")
+  @@schema("crm")
+}
+
+model lead_tags {
+  id                 BigInt               @id @default(autoincrement())
+  uuid               String               @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id         BigInt?
+  name               String               @db.VarChar(80)
+  color              String?              @db.VarChar(20)
+  icon               String?              @db.VarChar(50)
+  description        String?
+  active             Boolean?             @default(true)
+  created_by         BigInt?
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  lead_tag_relations lead_tag_relations[]
+  companies          companies?           @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tag_company")
+  users              users?               @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tag_user")
+
+  @@unique([company_id, name], map: "uq_company_tag")
+  @@index([company_id], map: "idx_tag_company")
+  @@index([name], map: "idx_tag_name")
+  @@schema("crm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model leads {
+  id                                              BigInt               @id @default(autoincrement())
+  uuid                                            String               @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                                            String               @unique @db.VarChar(30)
+  company_id                                      BigInt?
+  contact_id                                      BigInt
+  assigned_to                                     BigInt
+  source_id                                       BigInt
+  status_id                                       BigInt
+  pipeline_id                                     BigInt
+  stage_id                                        BigInt
+  parent_lead_id                                  BigInt?
+  title                                           String               @db.VarChar(250)
+  description                                     String?
+  estimated_value                                 Decimal?             @default(0) @db.Decimal(18, 2)
+  probability                                     Decimal?             @default(0) @db.Decimal(5, 2)
+  expected_close_date                             DateTime?            @db.Date
+  next_follow_up                                  DateTime?            @db.Timestamptz(6)
+  priority                                        String?              @default("MEDIA") @db.VarChar(20)
+  lead_score                                      Int?                 @default(0)
+  temperature                                     String?              @default("WARM") @db.VarChar(20)
+  interested_service                              String?              @db.VarChar(200)
+  campaign                                        String?              @db.VarChar(150)
+  industry                                        String?              @db.VarChar(120)
+  employees                                       Int?
+  annual_revenue                                  Decimal?             @db.Decimal(18, 2)
+  website                                         String?              @db.VarChar(255)
+  origin_notes                                    String?
+  observations                                    String?
+  is_converted                                    Boolean?             @default(false)
+  converted_company_id                            BigInt?
+  converted_contact_id                            BigInt?
+  converted_at                                    DateTime?            @db.Timestamptz(6)
+  won_reason                                      String?
+  lost_reason                                     String?
+  closed_at                                       DateTime?            @db.Timestamptz(6)
+  created_by                                      BigInt
+  updated_by                                      BigInt?
+  created_at                                      DateTime?            @default(now()) @db.Timestamptz(6)
+  updated_at                                      DateTime?            @default(now()) @db.Timestamptz(6)
+  deleted_at                                      DateTime?            @db.Timestamptz(6)
+  chat_sessions                                   chat_sessions[]
+  handovers                                       handovers[]
+  lead_activities                                 lead_activities[]
+  lead_files                                      lead_files[]
+  lead_notes                                      lead_notes[]
+  lead_tag_relations                              lead_tag_relations[]
+  companies_leads_converted_company_idTocompanies companies?           @relation("leads_converted_company_idTocompanies", fields: [converted_company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_converted_company")
+  contacts_leads_converted_contact_idTocontacts   contacts?            @relation("leads_converted_contact_idTocontacts", fields: [converted_contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_converted_contact")
+  users_leads_created_byTousers                   users                @relation("leads_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_created_user")
+  users_leads_assigned_toTousers                  users                @relation("leads_assigned_toTousers", fields: [assigned_to], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_assigned")
+  companies_leads_company_idTocompanies           companies?           @relation("leads_company_idTocompanies", fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_company")
+  contacts_leads_contact_idTocontacts             contacts             @relation("leads_contact_idTocontacts", fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_contact")
+  pipelines                                       pipelines            @relation(fields: [pipeline_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_pipeline")
+  lead_sources                                    lead_sources         @relation(fields: [source_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_source")
+  pipeline_stages                                 pipeline_stages      @relation(fields: [stage_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_stage")
+  lead_statuses                                   lead_statuses        @relation(fields: [status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_lead_status")
+  leads                                           leads?               @relation("leadsToleads", fields: [parent_lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_parent_lead")
+  other_leads                                     leads[]              @relation("leadsToleads")
+  users_leads_updated_byTousers                   users?               @relation("leads_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_updated_user")
+  opportunities                                   opportunities[]
+
+  @@index([assigned_to], map: "idx_leads_assigned")
+  @@index([company_id], map: "idx_leads_company")
+  @@index([contact_id], map: "idx_leads_contact")
+  @@index([created_at], map: "idx_leads_created")
+  @@index([pipeline_id], map: "idx_leads_pipeline")
+  @@index([priority], map: "idx_leads_priority")
+  @@index([lead_score], map: "idx_leads_score")
+  @@index([stage_id], map: "idx_leads_stage")
+  @@index([status_id], map: "idx_leads_status")
+  @@index([temperature], map: "idx_leads_temperature")
+  @@schema("crm")
+}
+
+model pipeline_stages {
+  id          BigInt    @id @default(autoincrement())
+  uuid        String?   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  pipeline_id BigInt
+  name        String    @db.VarChar(120)
+  description String?
+  stage_order Int       @db.SmallInt
+  probability Decimal?  @db.Decimal(5, 2)
+  color       String?   @db.VarChar(20)
+  is_closed   Boolean?  @default(false)
+  is_success  Boolean?  @default(false)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  leads       leads[]
+  pipelines   pipelines @relation(fields: [pipeline_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_pipeline_stage_pipeline")
+
+  @@index([pipeline_id], map: "idx_pipeline_stage_pipeline")
+  @@schema("crm")
+}
+
+model pipelines {
+  id              BigInt            @id @default(autoincrement())
+  uuid            String?           @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String            @unique(map: "idx_pipeline_name") @db.VarChar(150)
+  description     String?
+  color           String?           @db.VarChar(20)
+  is_default      Boolean?          @default(false)
+  is_active       Boolean?          @default(true)
+  created_at      DateTime?         @default(now()) @db.Timestamptz(6)
+  leads           leads[]
+  pipeline_stages pipeline_stages[]
+
+  @@schema("crm")
+}
+
+model file_access_logs {
+  id         BigInt    @id @default(autoincrement())
+  file_id    BigInt
+  user_id    BigInt?
+  action     String?   @db.VarChar(50)
+  ip_address String?   @db.VarChar(50)
+  user_agent String?
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  files      files     @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_log_file")
+  users      users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_log_user")
+
+  @@index([file_id], map: "idx_file_access_logs_file")
+  @@index([user_id], map: "idx_file_access_logs_user")
+  @@schema("foundation")
+}
+
+model file_categories {
+  id          BigInt   @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  description String?
+  color       String?  @db.VarChar(20)
+  icon        String?  @db.VarChar(80)
+  is_active   Boolean? @default(true)
+
+  @@schema("foundation")
+}
+
+model file_shares {
+  id             BigInt    @id @default(autoincrement())
+  file_id        BigInt
+  token          String?   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expires_at     DateTime? @db.Timestamptz(6)
+  max_downloads  Int?
+  download_count Int?      @default(0)
+  password_hash  String?
+  created_by     BigInt?
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  files          files     @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_share_file")
+  users          users?    @relation(fields: [created_by], references: [id], onUpdate: NoAction, map: "fk_share_user")
+
+  @@index([created_by], map: "idx_file_shares_created_by")
+  @@index([file_id], map: "idx_file_shares_file")
+  @@schema("foundation")
+}
+
+model file_tags {
+  id      BigInt @id @default(autoincrement())
+  file_id BigInt
+  tag     String @db.VarChar(80)
+  files   files  @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_tag_file")
+
+  @@index([tag], map: "idx_file_tag")
+  @@schema("foundation")
+}
+
+model file_versions {
+  id             BigInt    @id @default(autoincrement())
+  file_id        BigInt
+  version_number Int
+  storage_path   String
+  checksum       String?   @db.VarChar(255)
+  size_bytes     BigInt?
+  uploaded_by    BigInt?
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  files          files     @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_version_file")
+  users          users?    @relation(fields: [uploaded_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_version_user")
+
+  @@index([file_id], map: "idx_file_versions_file")
+  @@index([uploaded_by], map: "idx_file_versions_uploaded_by")
+  @@schema("foundation")
+}
+
+model files {
+  id                  BigInt                @id @default(autoincrement())
+  uuid                String                @unique(map: "uk_file_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  company_id          BigInt
+  uploaded_by         BigInt?
+  storage_provider_id BigInt?
+  original_name       String                @db.VarChar(255)
+  file_name           String                @db.VarChar(255)
+  extension           String?               @db.VarChar(20)
+  mime_type           String?               @db.VarChar(120)
+  size_bytes          BigInt?
+  folder              String?               @db.VarChar(255)
+  storage_path        String
+  public_url          String?
+  checksum            String?               @db.VarChar(255)
+  entity_type         String?               @db.VarChar(100)
+  entity_id           BigInt?
+  description         String?
+  is_public           Boolean?              @default(false)
+  is_deleted          Boolean?              @default(false)
+  created_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?             @default(now()) @db.Timestamptz(6)
+  width               Int?
+  height              Int?
+  applications        applications[]
+  file_links          file_links[]
+  posts               posts[]
+  testimonials        testimonials[]
+  lead_files          lead_files[]
+  file_access_logs    file_access_logs[]
+  file_shares         file_shares[]
+  file_tags           file_tags[]
+  file_versions       file_versions[]
+  companies           companies             @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_file_company")
+  users               users?                @relation(fields: [uploaded_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_file_user")
+  request_attachments request_attachments[]
+
+  @@index([company_id], map: "idx_file_company")
+  @@index([entity_type, entity_id], map: "idx_file_entity")
+  @@index([uploaded_by], map: "idx_file_uploaded")
+  @@schema("foundation")
+}
+
+model storage_providers {
+  id            BigInt    @id @default(autoincrement())
+  name          String    @db.VarChar(120)
+  provider_type String?   @db.VarChar(50)
+  bucket_name   String?   @db.VarChar(200)
+  endpoint      String?
+  region        String?   @db.VarChar(100)
+  is_default    Boolean?  @default(false)
+  is_active     Boolean?  @default(true)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@schema("foundation")
+}
+
+model system_settings {
+  id            BigInt    @id @default(autoincrement())
+  setting_key   String    @unique @db.VarChar(150)
+  setting_value String?
+  description   String?
+  data_type     String?   @db.VarChar(30)
+  is_public     Boolean?  @default(false)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@schema("foundation")
+}
+
+model api_clients {
+  id                  BigInt    @id @default(autoincrement())
+  uuid                String    @unique(map: "uk_api_client_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String    @db.VarChar(150)
+  description         String?
+  client_id           String    @unique(map: "uk_api_client_id") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  client_secret       String    @unique(map: "uk_api_client_secret") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  is_active           Boolean   @default(true)
+  rate_limit_per_hour Int?      @default(1000)
+  allowed_ips         String?
+  expires_at          DateTime? @db.Timestamptz(6)
+  last_used_at        DateTime? @db.Timestamptz(6)
+  created_at          DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_api_client_active")
+  @@index([expires_at], map: "idx_api_client_expiration")
+  @@schema("security")
+}
+
+model security_audit_logs {
+  id                BigInt    @id @default(autoincrement())
+  uuid              String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id           BigInt?
+  session_id        BigInt?
+  module            String    @db.VarChar(100)
+  entity            String    @db.VarChar(100)
+  entity_uuid       String?   @db.Uuid
+  action            String    @db.VarChar(50)
+  description       String?
+  old_data          Json?
+  new_data          Json?
+  ip_address        String?   @db.Inet
+  user_agent        String?
+  browser           String?   @db.VarChar(100)
+  operating_system  String?   @db.VarChar(100)
+  device_type       String?   @db.VarChar(50)
+  request_method    String?   @db.VarChar(10)
+  request_url       String?
+  http_status       Int?      @db.SmallInt
+  execution_time_ms Int?
+  created_at        DateTime  @default(now()) @db.Timestamptz(6)
+  sessions          sessions? @relation(fields: [session_id], references: [id], onUpdate: NoAction, map: "fk_audit_session")
+  users             users?    @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_audit_user")
+
+  @@index([action], map: "idx_audit_action")
+  @@index([created_at], map: "idx_audit_date")
+  @@index([entity], map: "idx_audit_entity")
+  @@index([entity_uuid], map: "idx_audit_entity_uuid")
+  @@index([module], map: "idx_audit_module")
+  @@index([user_id], map: "idx_audit_user")
+  @@map("audit_logs")
+  @@schema("security")
+}
+
+model email_verifications {
+  id          BigInt    @id @default(autoincrement())
+  uuid        String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id     BigInt
+  token       String    @unique(map: "uk_email_verification_token") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expires_at  DateTime  @db.Timestamptz(6)
+  verified_at DateTime? @db.Timestamptz(6)
+  created_at  DateTime  @default(now()) @db.Timestamptz(6)
+  users       users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_email_verification_user")
+
+  @@index([user_id], map: "idx_email_verification_user")
+  @@schema("security")
+}
+
+model login_attempts {
+  id               BigInt   @id @default(autoincrement())
+  uuid             String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          BigInt?
+  email            String?  @db.VarChar(255)
+  ip_address       String   @db.Inet
+  user_agent       String?
+  browser          String?  @db.VarChar(100)
+  operating_system String?  @db.VarChar(100)
+  device_type      String?  @db.VarChar(50)
+  country          String?  @db.VarChar(100)
+  city             String?  @db.VarChar(100)
+  success          Boolean
+  failure_reason   String?  @db.VarChar(200)
+  attempted_at     DateTime @default(now()) @db.Timestamptz(6)
+  users            users?   @relation(fields: [user_id], references: [id], onUpdate: NoAction, map: "fk_login_attempts_user")
+
+  @@index([attempted_at], map: "idx_login_attempts_date")
+  @@index([email], map: "idx_login_attempts_email")
+  @@index([ip_address], map: "idx_login_attempts_ip")
+  @@index([user_id], map: "idx_login_attempts_user")
+  @@schema("security")
+}
+
+model password_resets {
+  id         BigInt    @id @default(autoincrement())
+  uuid       String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    BigInt
+  token      String    @unique(map: "uk_password_reset_token") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ip_address String?   @db.Inet
+  user_agent String?
+  expires_at DateTime  @db.Timestamptz(6)
+  used_at    DateTime? @db.Timestamptz(6)
+  created_at DateTime  @default(now()) @db.Timestamptz(6)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_password_resets_user")
+
+  @@index([expires_at], map: "idx_password_resets_expiration")
+  @@index([user_id], map: "idx_password_resets_user")
+  @@schema("security")
+}
+
+model permissions {
+  id               BigInt             @id @default(autoincrement())
+  uuid             String             @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  module           String             @db.VarChar(50)
+  resource         String             @db.VarChar(100)
+  action           String             @db.VarChar(30)
+  permission_key   String             @unique(map: "uk_permission_key") @db.VarChar(200)
+  description      String?
+  created_at       DateTime?          @default(now()) @db.Timestamp(6)
+  role_permissions role_permissions[]
+
+  @@schema("security")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model positions {
+  id          BigInt   @id @default(autoincrement())
+  uuid        String   @unique(map: "uk_positions_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String   @unique(map: "uk_positions_name") @db.VarChar(100)
+  description String?
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.Timestamp(6)
+  updated_at  DateTime @default(now()) @db.Timestamp(6)
+  users       users[]
+
+  @@schema("security")
+}
+
+model role_permissions {
+  id            BigInt      @id @default(autoincrement())
+  role_id       BigInt
+  permission_id BigInt
+  created_at    DateTime    @default(now()) @db.Timestamp(6)
+  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_role_permissions_permission")
+  roles         roles       @relation(fields: [role_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_role_permissions_role")
+
+  @@unique([role_id, permission_id], map: "uk_role_permission")
+  @@index([permission_id], map: "idx_role_permissions_permission")
+  @@index([role_id], map: "idx_role_permissions_role")
+  @@schema("security")
+}
+
+model roles {
+  id               BigInt             @id @default(autoincrement())
+  uuid             String             @unique(map: "uk_roles_uuid") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String             @unique(map: "uk_roles_name") @db.VarChar(100)
+  description      String?
+  is_system        Boolean            @default(false)
+  is_active        Boolean            @default(true)
+  created_at       DateTime           @default(now()) @db.Timestamp(6)
+  updated_at       DateTime           @default(now()) @db.Timestamp(6)
+  role_permissions role_permissions[]
+  users            users[]
+
+  @@schema("security")
+}
+
+model sessions {
+  id               BigInt                @id @default(autoincrement())
+  uuid             String                @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          BigInt
+  access_token     String                @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  refresh_token    String                @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ip_address       String                @db.Inet
+  user_agent       String?
+  browser          String?               @db.VarChar(100)
+  browser_version  String?               @db.VarChar(50)
+  operating_system String?               @db.VarChar(100)
+  device_type      String?               @db.VarChar(50)
+  device_name      String?               @db.VarChar(150)
+  country          String?               @db.VarChar(100)
+  city             String?               @db.VarChar(100)
+  latitude         Decimal?              @db.Decimal(10, 7)
+  longitude        Decimal?              @db.Decimal(10, 7)
+  is_mobile        Boolean               @default(false)
+  is_current       Boolean               @default(true)
+  expires_at       DateTime              @db.Timestamp(6)
+  revoked_at       DateTime?             @db.Timestamp(6)
+  last_activity_at DateTime              @default(now()) @db.Timestamp(6)
+  created_at       DateTime              @default(now()) @db.Timestamp(6)
+  audit_logs       security_audit_logs[]
+  users            users                 @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_sessions_user")
+
+  @@index([access_token], map: "idx_sessions_access_token")
+  @@index([created_at], map: "idx_sessions_created")
+  @@index([last_activity_at], map: "idx_sessions_last_activity")
+  @@index([refresh_token], map: "idx_sessions_refresh_token")
+  @@index([user_id], map: "idx_sessions_user")
+  @@schema("security")
+}
+
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
+model users {
+  file_links file_links[]
+  id                                                           BigInt                       @id @default(autoincrement())
+  uuid                                                         String                       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  role_id                                                      BigInt
+  position_id                                                  BigInt?
+  first_name                                                   String                       @db.VarChar(100)
+  last_name                                                    String                       @db.VarChar(100)
+  email                                                        String                       @db.VarChar(255)
+  phone                                                        String?                      @db.VarChar(30)
+  password_hash                                                String
+  avatar_url                                                   String?
+  status                                                       user_status                  @default(PENDING_VERIFICATION)
+  email_verified                                               Boolean                      @default(false)
+  two_factor_enabled                                           Boolean                      @default(false)
+  language_code                                                String?                      @default("es") @db.VarChar(5)
+  timezone                                                     String?                      @default("America/Bogota") @db.VarChar(60)
+  last_login_at                                                DateTime?                    @db.Timestamp(6)
+  created_at                                                   DateTime                     @default(now()) @db.Timestamp(6)
+  updated_at                                                   DateTime                     @default(now()) @db.Timestamp(6)
+  deleted_at                                                   DateTime?                    @db.Timestamp(6)
+  application_evaluations                                      application_evaluations[]
+  application_interviews                                       application_interviews[]
+  application_status_history                                   application_status_history[]
+  applications                                                 applications[]
+  job_positions_job_positions_created_byTousers                job_positions[]              @relation("job_positions_created_byTousers")
+  job_positions_job_positions_updated_byTousers                job_positions[]              @relation("job_positions_updated_byTousers")
+  recruiters                                                   recruiters?
+  chat_events                                                  chat_events[]
+  chat_messages                                                chat_messages[]
+  chat_sessions                                                chat_sessions[]
+  consents                                                     consents[]
+  handover_assignments_handover_assignments_assigned_byTousers handover_assignments[]       @relation("handover_assignments_assigned_byTousers")
+  handover_assignments_handover_assignments_assigned_toTousers handover_assignments[]       @relation("handover_assignments_assigned_toTousers")
+  handovers_handovers_assigned_toTousers                       handovers[]                  @relation("handovers_assigned_toTousers")
+  handovers_handovers_requested_byTousers                      handovers[]                  @relation("handovers_requested_byTousers")
+  company_profile                                              company_profile[]
+  company_values_company_values_created_byTousers              company_values[]             @relation("company_values_created_byTousers")
+  company_values_company_values_updated_byTousers              company_values[]             @relation("company_values_updated_byTousers")
+  hero_slides_hero_slides_created_byTousers                    hero_slides[]                @relation("hero_slides_created_byTousers")
+  hero_slides_hero_slides_updated_byTousers                    hero_slides[]                @relation("hero_slides_updated_byTousers")
+  pages_pages_created_byTousers                                pages[]                      @relation("pages_created_byTousers")
+  pages_pages_updated_byTousers                                pages[]                      @relation("pages_updated_byTousers")
+  posts                                                        posts[]
+  team_members_team_members_created_byTousers                  team_members[]               @relation("team_members_created_byTousers")
+  team_members_team_members_updated_byTousers                  team_members[]               @relation("team_members_updated_byTousers")
+  who_we_are_concepts_who_we_are_concepts_created_byTousers    who_we_are_concepts[]        @relation("who_we_are_concepts_created_byTousers")
+  who_we_are_concepts_who_we_are_concepts_updated_byTousers    who_we_are_concepts[]        @relation("who_we_are_concepts_updated_byTousers")
+  core_audit_logs                                              core_audit_logs[]
+  activities                                                   activities[]
+  lead_activities_lead_activities_created_byTousers            lead_activities[]            @relation("lead_activities_created_byTousers")
+  lead_activities_lead_activities_updated_byTousers            lead_activities[]            @relation("lead_activities_updated_byTousers")
+  lead_activities_lead_activities_assigned_user_idTousers      lead_activities[]            @relation("lead_activities_assigned_user_idTousers")
+  lead_files                                                   lead_files[]
+  lead_notes_lead_notes_created_byTousers                      lead_notes[]                 @relation("lead_notes_created_byTousers")
+  lead_notes_lead_notes_updated_byTousers                      lead_notes[]                 @relation("lead_notes_updated_byTousers")
+  lead_tag_relations                                           lead_tag_relations[]
+  lead_tags                                                    lead_tags[]
+  leads_leads_created_byTousers                                leads[]                      @relation("leads_created_byTousers")
+  leads_leads_assigned_toTousers                               leads[]                      @relation("leads_assigned_toTousers")
+  leads_leads_updated_byTousers                                leads[]                      @relation("leads_updated_byTousers")
+  opportunities_opportunities_created_byTousers                opportunities[]              @relation("opportunities_created_byTousers")
+  opportunities_opportunities_owner_user_idTousers             opportunities[]              @relation("opportunities_owner_user_idTousers")
+  opportunities_opportunities_updated_byTousers                opportunities[]              @relation("opportunities_updated_byTousers")
+  tasks_tasks_assignee_user_idTousers                          tasks[]                      @relation("tasks_assignee_user_idTousers")
+  tasks_tasks_created_byTousers                                tasks[]                      @relation("tasks_created_byTousers")
+  tasks_tasks_updated_byTousers                                tasks[]                      @relation("tasks_updated_byTousers")
+  file_access_logs                                             file_access_logs[]
+  file_shares                                                  file_shares[]
+  file_versions                                                file_versions[]
+  files                                                        files[]
+  notifications                                                notifications[]
+  request_assignments                                          request_assignments[]
+  request_attachments                                          request_attachments[]
+  request_messages                                             request_messages[]
+  request_status_history                                       request_status_history[]
+  requests_requests_assigned_toTousers                         requests[]                   @relation("requests_assigned_toTousers")
+  requests_requests_created_byTousers                          requests[]                   @relation("requests_created_byTousers")
+  requests_requests_updated_byTousers                          requests[]                   @relation("requests_updated_byTousers")
+  security_audit_logs                                          security_audit_logs[]
+  email_verifications                                          email_verifications[]
+  login_attempts                                               login_attempts[]
+  password_resets                                              password_resets[]
+  sessions                                                     sessions[]
+  positions                                                    positions?                   @relation(fields: [position_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_position")
+  roles                                                        roles                        @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_role")
+
+  @@schema("security")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model application_evaluations {
+  id                  BigInt       @id @default(autoincrement())
+  application_id      BigInt
+  evaluator_id        BigInt?
+  technical_score     Decimal?     @db.Decimal(5, 2)
+  communication_score Decimal?     @db.Decimal(5, 2)
+  experience_score    Decimal?     @db.Decimal(5, 2)
+  culture_score       Decimal?     @db.Decimal(5, 2)
+  overall_score       Decimal?     @db.Decimal(5, 2)
+  recommendation      String?      @db.VarChar(30)
+  comments            String?
+  created_at          DateTime?    @default(now()) @db.Timestamptz(6)
+  applications        applications @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_evaluation_application")
+  users               users?       @relation(fields: [evaluator_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_evaluation_user")
+
+  @@schema("careers")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model application_interviews {
+  id               BigInt       @id @default(autoincrement())
+  application_id   BigInt
+  interviewer_id   BigInt?
+  interview_type   String?      @db.VarChar(50)
+  scheduled_at     DateTime     @db.Timestamptz(6)
+  duration_minutes Int?
+  location         String?      @db.VarChar(200)
+  meeting_url      String?
+  status           String       @default("SCHEDULED") @db.VarChar(30)
+  notes            String?
+  created_at       DateTime?    @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?    @default(now()) @db.Timestamptz(6)
+  applications     applications @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_interview_application")
+  users            users?       @relation(fields: [interviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_interview_interviewer")
+
+  @@schema("careers")
+}
+
+model application_status_history {
+  id             BigInt       @id @default(autoincrement())
+  application_id BigInt
+  old_status     String?      @db.VarChar(40)
+  new_status     String       @db.VarChar(40)
+  notes          String?
+  changed_by     BigInt?
+  created_at     DateTime     @default(now()) @db.Timestamptz(6)
+  applications   applications @relation(fields: [application_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_application_history_application")
+  users          users?       @relation(fields: [changed_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_application_history_user")
+
+  @@index([application_id], map: "idx_application_history_application")
+  @@schema("careers")
+}
+
+model applications {
+  id                         BigInt                       @id @default(autoincrement())
+  uuid                       String                       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  job_position_id            BigInt
+  cover_letter               String?
+  notes                      String?
+  status                     String                       @default("RECEIVED") @db.VarChar(40)
+  applied_at                 DateTime                     @default(now()) @db.Timestamptz(6)
+  created_at                 DateTime?                    @default(now()) @db.Timestamptz(6)
+  updated_at                 DateTime?                    @default(now()) @db.Timestamptz(6)
+  candidate_id               BigInt
+  source                     String?                      @db.VarChar(50)
+  recruiter_notes            String?
+  assigned_recruiter         BigInt?
+  experience_range           String?                      @db.VarChar(20)
+  consent_policy_version     String?                      @db.VarChar(50)
+  consent_text               String?
+  consent_ip                 String?                      @db.VarChar(64)
+  consent_communications     Boolean                      @default(false)
+  consent_share_cv           Boolean                      @default(false)
+  cv_file_id                 BigInt?
+  desired_position           String?                      @db.VarChar(200)
+  application_evaluations    application_evaluations[]
+  application_interviews     application_interviews[]
+  application_status_history application_status_history[]
+  files                      files?                       @relation(fields: [cv_file_id], references: [id], onUpdate: NoAction)
+  candidates                 candidates                   @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_application_candidate")
+  job_positions              job_positions                @relation(fields: [job_position_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_application_job")
+  users                      users?                       @relation(fields: [assigned_recruiter], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_application_recruiter")
+
+  @@unique([candidate_id, job_position_id], map: "uq_candidate_job")
+  @@index([job_position_id], map: "idx_applications_job")
+  @@index([status], map: "idx_applications_status")
+  @@schema("careers")
+}
+
+model candidate_education {
+  id                 BigInt     @id @default(autoincrement())
+  candidate_id       BigInt
+  institution        String     @db.VarChar(200)
+  degree             String?    @db.VarChar(200)
+  field_of_study     String?    @db.VarChar(200)
+  education_level    String?    @db.VarChar(100)
+  start_date         DateTime?  @db.Date
+  end_date           DateTime?  @db.Date
+  currently_studying Boolean    @default(false)
+  description        String?
+  created_at         DateTime?  @default(now()) @db.Timestamptz(6)
+  candidates         candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_education_candidate")
+
+  @@schema("careers")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model candidate_experiences {
+  id           BigInt     @id @default(autoincrement())
+  candidate_id BigInt
+  company_name String     @db.VarChar(200)
+  position     String     @db.VarChar(200)
+  description  String?
+  start_date   DateTime   @db.Date
+  end_date     DateTime?  @db.Date
+  is_current   Boolean    @default(false)
+  created_at   DateTime?  @default(now()) @db.Timestamptz(6)
+  candidates   candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_experience_candidate")
+
+  @@schema("careers")
+}
+
+model candidate_languages {
+  id             BigInt     @id @default(autoincrement())
+  candidate_id   BigInt
+  language_name  String     @db.VarChar(100)
+  reading_level  String?    @db.VarChar(30)
+  writing_level  String?    @db.VarChar(30)
+  speaking_level String?    @db.VarChar(30)
+  created_at     DateTime?  @default(now()) @db.Timestamptz(6)
+  candidates     candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_candidate_language")
+
+  @@schema("careers")
+}
+
+model candidate_skills {
+  id           BigInt     @id @default(autoincrement())
+  candidate_id BigInt
+  skill_name   String     @db.VarChar(150)
+  level        String?    @db.VarChar(30)
+  created_at   DateTime?  @default(now()) @db.Timestamptz(6)
+  candidates   candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_candidate_skill")
+
+  @@schema("careers")
+}
+
+model candidates {
+  id                      BigInt                  @id @default(autoincrement())
+  uuid                    String                  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  first_name              String                  @db.VarChar(100)
+  middle_name             String?                 @db.VarChar(100)
+  last_name               String                  @db.VarChar(100)
+  second_last_name        String?                 @db.VarChar(100)
+  email                   String                  @db.VarChar(200)
+  phone                   String?                 @db.VarChar(50)
+  mobile_phone            String?                 @db.VarChar(50)
+  whatsapp                String?                 @db.VarChar(50)
+  identification_type     String?                 @db.VarChar(30)
+  identification_number   String?                 @db.VarChar(50)
+  birth_date              DateTime?               @db.Date
+  gender                  String?                 @db.VarChar(30)
+  city_id                 BigInt?
+  linkedin_url            String?
+  portfolio_url           String?
+  github_url              String?
+  professional_summary    String?
+  current_position        String?                 @db.VarChar(200)
+  current_company         String?                 @db.VarChar(200)
+  years_experience        Decimal?                @db.Decimal(5, 2)
+  availability            String?                 @db.VarChar(50)
+  expected_salary         Decimal?                @db.Decimal(14, 2)
+  salary_currency         String?                 @default("COP") @db.VarChar(10)
+  consent_data_processing Boolean                 @default(false)
+  consent_date            DateTime?               @db.Timestamptz(6)
+  status                  String                  @default("ACTIVE") @db.VarChar(30)
+  created_at              DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime?               @default(now()) @db.Timestamptz(6)
+
+  applications            applications[]
+  candidate_education     candidate_education[]
+  candidate_experiences   candidate_experiences[]
+  candidate_languages     candidate_languages[]
+  candidate_skills        candidate_skills[]
+  cities                  cities?                 @relation(fields: [city_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_candidate_city")
+
+
+
+  @@schema("careers")
+}
+
+model job_position_benefits {
+  id              BigInt        @id @default(autoincrement())
+  job_position_id BigInt
+  benefit         String        @db.VarChar(200)
+  description     String?
+  created_at      DateTime?     @default(now()) @db.Timestamptz(6)
+  job_positions   job_positions @relation(fields: [job_position_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_job_benefit_position")
+
+  @@schema("careers")
+}
+
+model job_position_skills {
+  id              BigInt        @id @default(autoincrement())
+  job_position_id BigInt
+  skill_name      String        @db.VarChar(150)
+  is_required     Boolean       @default(true)
+  level           String?       @db.VarChar(30)
+  created_at      DateTime?     @default(now()) @db.Timestamptz(6)
+  job_positions   job_positions @relation(fields: [job_position_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_job_skill_position")
+
+  @@schema("careers")
+}
+
+model job_positions {
+  id                                    BigInt                  @id @default(autoincrement())
+  uuid                                  String                  @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                                 String                  @db.VarChar(200)
+  code                                  String?                 @db.VarChar(50)
+  description                           String?
+  requirements                          String?
+  responsibilities                      String?
+  location                              String?                 @db.VarChar(200)
+  work_mode                             String?                 @db.VarChar(50)
+  employment_type                       String?                 @db.VarChar(50)
+  salary_min                            Decimal?                @db.Decimal(14, 2)
+  salary_max                            Decimal?                @db.Decimal(14, 2)
+  salary_currency                       String?                 @default("COP") @db.VarChar(10)
+  vacancies                             Int                     @default(1)
+  status                                String                  @default("DRAFT") @db.VarChar(30)
+  published_at                          DateTime?               @db.Timestamptz(6)
+  closing_date                          DateTime?               @db.Date
+  created_by                            BigInt?
+  updated_by                            BigInt?
+  created_at                            DateTime?               @default(now()) @db.Timestamptz(6)
+  updated_at                            DateTime?               @default(now()) @db.Timestamptz(6)
+  department                            String?                 @db.VarChar(150)
+  image_url                             String?
+  image_alt                             String?                 @db.VarChar(300)
+  applications                          applications[]
+  job_position_benefits                 job_position_benefits[]
+  job_position_skills                   job_position_skills[]
+  users_job_positions_created_byTousers users?                  @relation("job_positions_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_created_by")
+  users_job_positions_updated_byTousers users?                  @relation("job_positions_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_updated_by")
+
+  @@index([closing_date], map: "idx_job_positions_closing_date")
+  @@index([status], map: "idx_job_positions_status")
+  @@schema("careers")
+}
+
+model recruiters {
+  id         BigInt    @id @default(autoincrement())
+  user_id    BigInt    @unique
+  is_active  Boolean   @default(true)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  users      users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_recruiter_user")
+
+  @@schema("careers")
+}
+
+model faqs {
+  id         BigInt    @id @default(autoincrement())
+  uuid       String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  question   String    @db.VarChar(300)
+  answer     String
+  category   String?   @db.VarChar(100)
+  sort_order Int       @default(1)
+  is_active  Boolean   @default(true)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_faqs_active")
+  @@schema("content")
+}
+
+model menu_items {
+  id               BigInt       @id @default(autoincrement())
+  uuid             String       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  menu_id          BigInt
+  parent_id        BigInt?
+  title            String       @db.VarChar(150)
+  url              String?
+  page_id          BigInt?
+  target           String?      @default("_self") @db.VarChar(30)
+  sort_order       Int          @default(1)
+  is_active        Boolean      @default(true)
+  created_at       DateTime?    @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime?    @default(now()) @db.Timestamptz(6)
+  menus            menus        @relation(fields: [menu_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_menu_item_menu")
+  pages            pages?       @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_menu_item_page")
+  menu_items       menu_items?  @relation("menu_itemsTomenu_items", fields: [parent_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_menu_item_parent")
+  other_menu_items menu_items[] @relation("menu_itemsTomenu_items")
+
+  @@index([menu_id], map: "idx_menu_items_menu")
+  @@index([page_id], map: "idx_menu_items_page")
+  @@index([parent_id], map: "idx_menu_items_parent")
+  @@schema("content")
+}
+
+model menus {
+  id         BigInt       @id @default(autoincrement())
+  uuid       String       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String       @unique(map: "uq_content_menu_name") @db.VarChar(100)
+  location   String?      @db.VarChar(50)
+  is_active  Boolean      @default(true)
+  created_at DateTime?    @default(now()) @db.Timestamptz(6)
+  updated_at DateTime?    @default(now()) @db.Timestamptz(6)
+  menu_items menu_items[]
+
+  @@schema("content")
+}
+
+model page_sections {
+  id           BigInt    @id @default(autoincrement())
+  uuid         String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  page_id      BigInt
+  section_type String    @db.VarChar(50)
+  title        String?   @db.VarChar(200)
+  subtitle     String?
+  content      Json?
+  sort_order   Int       @default(1)
+  is_active    Boolean   @default(true)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime? @default(now()) @db.Timestamptz(6)
+  pages        pages     @relation(fields: [page_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_page_section_page")
+
+  @@index([page_id, sort_order], map: "idx_page_sections_order")
+  @@index([page_id], map: "idx_page_sections_page")
+  @@schema("content")
+}
+
+model pages {
+  id                            BigInt          @id @default(autoincrement())
+  uuid                          String          @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                         String          @db.VarChar(200)
+  slug                          String          @unique(map: "uq_content_page_slug") @db.VarChar(200)
+  meta_title                    String?         @db.VarChar(200)
+  meta_description              String?
+  status                        String          @default("DRAFT") @db.VarChar(30)
+  template                      String?         @db.VarChar(100)
+  published_at                  DateTime?       @db.Timestamptz(6)
+  created_by                    BigInt?
+  updated_by                    BigInt?
+  created_at                    DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at                    DateTime?       @default(now()) @db.Timestamptz(6)
+  menu_items                    menu_items[]
+  page_sections                 page_sections[]
+  users_pages_created_byTousers users?          @relation("pages_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_content_page_created_by")
+  users_pages_updated_byTousers users?          @relation("pages_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_content_page_updated_by")
+
+  @@schema("content")
+}
+
+model post_categories {
+  id                      BigInt                    @id @default(autoincrement())
+  uuid                    String                    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                    String                    @unique(map: "uq_post_category_name") @db.VarChar(150)
+  slug                    String                    @unique(map: "uq_post_category_slug") @db.VarChar(150)
+  description             String?
+  is_active               Boolean                   @default(true)
+  created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  post_category_relations post_category_relations[]
+
+  @@schema("content")
+}
+
+model post_category_relations {
+  id              BigInt          @id @default(autoincrement())
+  post_id         BigInt
+  category_id     BigInt
+  post_categories post_categories @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_category_category")
+  posts           posts           @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_category_post")
+
+  @@unique([post_id, category_id], map: "uq_post_category")
+  @@index([category_id], map: "idx_post_category_category")
+  @@index([post_id], map: "idx_post_category_post")
+  @@schema("content")
+}
+
+model post_tag_relations {
+  id        BigInt    @id @default(autoincrement())
+  post_id   BigInt
+  tag_id    BigInt
+  posts     posts     @relation(fields: [post_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_tag_post")
+  post_tags post_tags @relation(fields: [tag_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_post_tag_tag")
+
+  @@unique([post_id, tag_id], map: "uq_post_tag")
+  @@index([post_id], map: "idx_post_tag_post")
+  @@index([tag_id], map: "idx_post_tag_tag")
+  @@schema("content")
+}
+
+model post_tags {
+  id                 BigInt               @id @default(autoincrement())
+  name               String               @unique(map: "uq_post_tag_name") @db.VarChar(100)
+  slug               String               @unique(map: "uq_post_tag_slug") @db.VarChar(100)
+  created_at         DateTime?            @default(now()) @db.Timestamptz(6)
+  post_tag_relations post_tag_relations[]
+
+  @@schema("content")
+}
+
+model posts {
+  id                      BigInt                    @id @default(autoincrement())
+  uuid                    String                    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                   String                    @db.VarChar(250)
+  slug                    String                    @unique(map: "uq_content_post_slug") @db.VarChar(250)
+  excerpt                 String?
+  content                 String?
+  featured_image_file_id  BigInt?
+  status                  String                    @default("DRAFT") @db.VarChar(30)
+  author_id               BigInt?
+  meta_title              String?                   @db.VarChar(200)
+  meta_description        String?
+  published_at            DateTime?                 @db.Timestamptz(6)
+  created_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime?                 @default(now()) @db.Timestamptz(6)
+  post_type               String                    @default("BLOG") @db.VarChar(10)
+  cover_image_url         String?
+  author_name             String?                   @db.VarChar(150)
+  subtitle                String?
+  image_alt               String?
+  content_blocks          Json?
+  conclusion              Json?
+  cta_label               String?                   @db.VarChar(200)
+  cta_href                String?                   @db.VarChar(300)
+  seo_title               String?                   @db.VarChar(300)
+  seo_description         String?
+  author_role             String?                   @db.VarChar(200)
+  author_image_url        String?
+  tags                    Json?
+  is_featured             Boolean                   @default(false)
+  post_category_relations post_category_relations[]
+  post_tag_relations      post_tag_relations[]
+  users                   users?                    @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_post_author")
+  files                   files?                    @relation(fields: [featured_image_file_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_post_image")
+
+  @@index([author_id], map: "idx_posts_author")
+  @@index([published_at], map: "idx_posts_published")
+  @@index([status], map: "idx_posts_status")
+  @@index([post_type], map: "idx_posts_type")
+  @@schema("content")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model redirects {
+  id               BigInt    @id @default(autoincrement())
+  source_path      String    @unique(map: "uq_redirect_source") @db.VarChar(500)
+  destination_path String    @db.VarChar(500)
+  status_code      Int       @default(301) @db.SmallInt
+  is_active        Boolean   @default(true)
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+
+  @@index([is_active], map: "idx_redirects_active")
+  @@schema("content")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model testimonials {
+  id            BigInt    @id @default(autoincrement())
+  uuid          String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String    @db.VarChar(150)
+  position      String?   @db.VarChar(150)
+  company_name  String?   @db.VarChar(200)
+  content       String
+  photo_file_id BigInt?
+  rating        Int?      @db.SmallInt
+  is_featured   Boolean   @default(false)
+  is_active     Boolean   @default(true)
+  sort_order    Int?      @default(1)
+  created_at    DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime? @default(now()) @db.Timestamptz(6)
+  files         files?    @relation(fields: [photo_file_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_testimonial_photo")
+
+  @@index([is_active], map: "idx_testimonials_active")
+  @@schema("content")
+}
+
+model request_assignments {
+  id            BigInt    @id @default(autoincrement())
+  request_id    BigInt
+  user_id       BigInt
+  assigned_at   DateTime  @default(now()) @db.Timestamptz(6)
+  unassigned_at DateTime? @db.Timestamptz(6)
+  is_primary    Boolean   @default(false)
+  notes         String?
+  requests      requests  @relation(fields: [request_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_assignment_request")
+  users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_assignment_user")
+
+  @@index([request_id], map: "idx_assignments_request")
+  @@index([user_id], map: "idx_assignments_user")
+  @@schema("pqr")
+}
+
+model request_attachments {
+  id          BigInt    @id @default(autoincrement())
+  request_id  BigInt
+  file_id     BigInt
+  description String?
+  uploaded_by BigInt?
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  files       files     @relation(fields: [file_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_attachment_file")
+  requests    requests  @relation(fields: [request_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_attachment_request")
+  users       users?    @relation(fields: [uploaded_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_attachment_user")
+
+  @@unique([request_id, file_id], map: "uq_request_attachment")
+  @@index([request_id], map: "idx_attachments_request")
+  @@schema("pqr")
+}
+
+model request_categories {
+  id          BigInt     @id @default(autoincrement())
+  code        String     @unique @db.VarChar(50)
+  name        String     @db.VarChar(100)
+  description String?
+  is_active   Boolean    @default(true)
+  requests    requests[]
+
+  @@schema("pqr")
+}
+
+model request_messages {
+  id             BigInt   @id @default(autoincrement())
+  request_id     BigInt
+  sender_user_id BigInt?
+  sender_name    String?  @db.VarChar(200)
+  sender_email   String?  @db.VarChar(200)
+  channel        String   @db.VarChar(50)
+  subject        String?  @db.VarChar(300)
+  message        String
+  is_internal    Boolean  @default(false)
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  requests       requests @relation(fields: [request_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_message_request")
+  users          users?   @relation(fields: [sender_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_message_user")
+
+  @@index([request_id], map: "idx_messages_request")
+  @@schema("pqr")
+}
+
+model request_priorities {
+  id           BigInt         @id @default(autoincrement())
+  code         String         @unique @db.VarChar(30)
+  name         String         @db.VarChar(50)
+  level        Int            @db.SmallInt
+  is_active    Boolean        @default(true)
+  request_slas request_slas[]
+  requests     requests[]
+
+  @@schema("pqr")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model request_slas {
+  id                 BigInt             @id @default(autoincrement())
+  request_type_id    BigInt
+  priority_id        BigInt
+  response_hours     Int
+  resolution_hours   Int?
+  is_active          Boolean            @default(true)
+  created_at         DateTime?          @default(now()) @db.Timestamptz(6)
+  request_priorities request_priorities @relation(fields: [priority_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sla_priority")
+  request_types      request_types      @relation(fields: [request_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sla_type")
+
+  @@unique([request_type_id, priority_id], map: "uq_sla_type_priority")
+  @@schema("pqr")
+}
+
+model request_status_history {
+  id                                                                      BigInt            @id @default(autoincrement())
+  request_id                                                              BigInt
+  old_status_id                                                           BigInt?
+  new_status_id                                                           BigInt
+  changed_by                                                              BigInt?
+  notes                                                                   String?
+  created_at                                                              DateTime          @default(now()) @db.Timestamptz(6)
+  request_statuses_request_status_history_new_status_idTorequest_statuses request_statuses  @relation("request_status_history_new_status_idTorequest_statuses", fields: [new_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_status_history_new")
+  request_statuses_request_status_history_old_status_idTorequest_statuses request_statuses? @relation("request_status_history_old_status_idTorequest_statuses", fields: [old_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_status_history_old")
+  requests                                                                requests          @relation(fields: [request_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_status_history_request")
+  users                                                                   users?            @relation(fields: [changed_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_status_history_user")
+
+  @@index([request_id], map: "idx_status_history_request")
+  @@schema("pqr")
+}
+
+model request_statuses {
+  id                                                                            BigInt                   @id @default(autoincrement())
+  code                                                                          String                   @unique @db.VarChar(50)
+  name                                                                          String                   @db.VarChar(100)
+  description                                                                   String?
+  is_closed                                                                     Boolean                  @default(false)
+  is_active                                                                     Boolean                  @default(true)
+  sort_order                                                                    Int                      @default(1) @db.SmallInt
+  request_status_history_request_status_history_new_status_idTorequest_statuses request_status_history[] @relation("request_status_history_new_status_idTorequest_statuses")
+  request_status_history_request_status_history_old_status_idTorequest_statuses request_status_history[] @relation("request_status_history_old_status_idTorequest_statuses")
+  requests                                                                      requests[]
+
+  @@schema("pqr")
+}
+
+model request_types {
+  id           BigInt         @id @default(autoincrement())
+  code         String         @unique @db.VarChar(50)
+  name         String         @db.VarChar(100)
+  description  String?
+  is_active    Boolean        @default(true)
+  sort_order   Int            @default(1) @db.SmallInt
+  request_slas request_slas[]
+  requests     requests[]
+
+  @@schema("pqr")
+}
+
+model requests {
+  id                                BigInt                   @id @default(autoincrement())
+  uuid                              String                   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                              String                   @unique @db.VarChar(50)
+  type_id                           BigInt
+  status_id                         BigInt
+  priority_id                       BigInt
+  category_id                       BigInt?
+  company_id                        BigInt?
+  contact_id                        BigInt?
+  requester_name                    String                   @db.VarChar(200)
+  requester_email                   String?                  @db.VarChar(200)
+  requester_phone                   String?                  @db.VarChar(50)
+  subject                           String                   @db.VarChar(300)
+  description                       String
+  source                            String?                  @db.VarChar(50)
+  received_at                       DateTime                 @default(now()) @db.Timestamptz(6)
+  due_at                            DateTime?                @db.Timestamptz(6)
+  responded_at                      DateTime?                @db.Timestamptz(6)
+  closed_at                         DateTime?                @db.Timestamptz(6)
+  assigned_to                       BigInt?
+  resolution                        String?
+  created_by                        BigInt?
+  updated_by                        BigInt?
+  created_at                        DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at                        DateTime?                @default(now()) @db.Timestamptz(6)
+  document_type                     String?                  @db.VarChar(20)
+  document_number                   String?                  @db.VarChar(50)
+  request_assignments               request_assignments[]
+  request_attachments               request_attachments[]
+  request_messages                  request_messages[]
+  request_status_history            request_status_history[]
+  users_requests_assigned_toTousers users?                   @relation("requests_assigned_toTousers", fields: [assigned_to], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_assigned")
+  request_categories                request_categories?      @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_category")
+  companies                         companies?               @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_company")
+  contacts                          contacts?                @relation(fields: [contact_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_contact")
+  users_requests_created_byTousers  users?                   @relation("requests_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_created")
+  request_priorities                request_priorities       @relation(fields: [priority_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_priority")
+  request_statuses                  request_statuses         @relation(fields: [status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_status")
+  request_types                     request_types            @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_type")
+  users_requests_updated_byTousers  users?                   @relation("requests_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_updated")
+
+  @@index([assigned_to], map: "idx_requests_assigned")
+  @@index([category_id], map: "idx_requests_category")
+  @@index([company_id], map: "idx_requests_company")
+  @@index([contact_id], map: "idx_requests_contact")
+  @@index([due_at], map: "idx_requests_due")
+  @@index([priority_id], map: "idx_requests_priority")
+  @@index([received_at], map: "idx_requests_received")
+  @@index([status_id], map: "idx_requests_status")
+  @@index([type_id], map: "idx_requests_type")
+  @@schema("pqr")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model opportunities {
+  id                                       BigInt     @id @default(autoincrement())
+  uuid                                     String     @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                                    String     @db.VarChar(250)
+  company_id                               BigInt?
+  contact_id                               BigInt?
+  source_lead_id                           BigInt?
+  value                                    Decimal    @default(0) @db.Decimal(18, 2)
+  currency                                 String     @default("COP") @db.VarChar(10)
+  stage                                    String     @default("NEW") @db.VarChar(20)
+  probability                              Int?       @db.SmallInt
+  owner_user_id                            BigInt?
+  expected_close_date                      DateTime?  @db.Date
+  closed_at                                DateTime?  @db.Timestamptz(6)
+  close_reason                             String?
+  created_by                               BigInt?
+  updated_by                               BigInt?
+  created_at                               DateTime   @default(now()) @db.Timestamptz(6)
+  updated_at                               DateTime   @default(now()) @db.Timestamptz(6)
+  companies                                companies? @relation(fields: [company_id], references: [id], onUpdate: NoAction)
+  contacts                                 contacts?  @relation(fields: [contact_id], references: [id], onUpdate: NoAction)
+  users_opportunities_created_byTousers    users?     @relation("opportunities_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction)
+  users_opportunities_owner_user_idTousers users?     @relation("opportunities_owner_user_idTousers", fields: [owner_user_id], references: [id], onUpdate: NoAction)
+  leads                                    leads?     @relation(fields: [source_lead_id], references: [id], onUpdate: NoAction)
+  users_opportunities_updated_byTousers    users?     @relation("opportunities_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@index([company_id], map: "idx_opportunities_company")
+  @@index([contact_id], map: "idx_opportunities_contact")
+  @@index([created_at], map: "idx_opportunities_created")
+  @@index([source_lead_id], map: "idx_opportunities_lead")
+  @@index([owner_user_id], map: "idx_opportunities_owner")
+  @@index([stage], map: "idx_opportunities_stage")
+  @@schema("crm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tasks {
+  id                                  BigInt    @id @default(autoincrement())
+  uuid                                String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                               String    @db.VarChar(250)
+  description                         String?
+  due_date                            DateTime? @db.Timestamptz(6)
+  assignee_user_id                    BigInt?
+  priority                            String    @default("MEDIUM") @db.VarChar(20)
+  status                              String    @default("PENDING") @db.VarChar(20)
+  related_type                        String?   @db.VarChar(20)
+  related_id                          BigInt?
+  created_by                          BigInt?
+  updated_by                          BigInt?
+  created_at                          DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at                          DateTime  @default(now()) @db.Timestamptz(6)
+  users_tasks_assignee_user_idTousers users?    @relation("tasks_assignee_user_idTousers", fields: [assignee_user_id], references: [id], onUpdate: NoAction)
+  users_tasks_created_byTousers       users?    @relation("tasks_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction)
+  users_tasks_updated_byTousers       users?    @relation("tasks_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@index([assignee_user_id], map: "idx_tasks_assignee")
+  @@index([due_date], map: "idx_tasks_due")
+  @@index([related_type, related_id], map: "idx_tasks_related")
+  @@index([status], map: "idx_tasks_status")
+  @@schema("crm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model chat_context {
+  session_id        String        @id @db.Uuid
+  name              String?
+  company_name      String?
+  industry          String?
+  position          String?
+  need              String?
+  service_id        BigInt?
+  intent_id         String?       @db.Uuid
+  lead_intent       Boolean       @default(false)
+  quote_requested   Boolean       @default(false)
+  human_requested   Boolean       @default(false)
+  pqr_requested     Boolean       @default(false)
+  careers_requested Boolean       @default(false)
+  context_data      Json?
+  confidence        Decimal?      @db.Decimal(5, 4)
+  updated_at        DateTime      @default(now()) @db.Timestamptz(6)
+  chat_intents      chat_intents? @relation(fields: [intent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_context_intent")
+  services          services?     @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_context_service")
+  chat_sessions     chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_context_session")
+
+  @@index([intent_id], map: "idx_chat_context_intent")
+  @@index([service_id], map: "idx_chat_context_service")
+  @@schema("chat")
+}
+
+model chat_events {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id    String         @db.Uuid
+  event_type    String         @db.VarChar(50)
+  message_id    String?        @db.Uuid
+  user_id       BigInt?
+  metadata      Json?
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
+  chat_messages chat_messages? @relation(fields: [message_id], references: [id], onUpdate: NoAction, map: "fk_chat_event_message")
+  chat_sessions chat_sessions  @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_event_session")
+  users         users?         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_event_user")
+
+  @@index([created_at], map: "idx_chat_events_created")
+  @@index([session_id], map: "idx_chat_events_session")
+  @@index([event_type], map: "idx_chat_events_type")
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model chat_feedback {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id    String         @db.Uuid
+  message_id    String?        @db.Uuid
+  rating        Int
+  comment       String?
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
+  chat_messages chat_messages? @relation(fields: [message_id], references: [id], onUpdate: NoAction, map: "fk_chat_feedback_message")
+  chat_sessions chat_sessions  @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_feedback_session")
+
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model chat_intent_detections {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id    String        @db.Uuid
+  message_id    String        @db.Uuid
+  intent_id     String        @db.Uuid
+  confidence    Decimal       @db.Decimal(5, 4)
+  detected_at   DateTime      @default(now()) @db.Timestamptz(6)
+  metadata      Json?
+  chat_intents  chat_intents  @relation(fields: [intent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_intent_detection_intent")
+  chat_messages chat_messages @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_intent_detection_message")
+  chat_sessions chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_intent_detection_session")
+
+  @@index([message_id], map: "idx_intent_detection_message")
+  @@index([session_id], map: "idx_intent_detection_session")
+  @@schema("chat")
+}
+
+model chat_intents {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  code                   String                   @unique @db.VarChar(50)
+  name                   String                   @db.VarChar(100)
+  description            String?
+  is_active              Boolean                  @default(true)
+  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  chat_context           chat_context[]
+  chat_intent_detections chat_intent_detections[]
+  chat_messages          chat_messages[]
+
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model chat_messages {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id             String                   @db.Uuid
+  sender_type            String                   @db.VarChar(30)
+  sender_id              BigInt?
+  message_type           String                   @default("TEXT") @db.VarChar(30)
+  content                String
+  intent_id              String?                  @db.Uuid
+  service_id             BigInt?
+  parent_message_id      String?                  @db.Uuid
+  status                 String                   @default("SENT") @db.VarChar(20)
+  metadata               Json?
+  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  chat_events            chat_events[]
+  chat_feedback          chat_feedback[]
+  chat_intent_detections chat_intent_detections[]
+  chat_intents           chat_intents?            @relation(fields: [intent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_message_intent")
+  chat_messages          chat_messages?           @relation("chat_messagesTochat_messages", fields: [parent_message_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_message_parent")
+  other_chat_messages    chat_messages[]          @relation("chat_messagesTochat_messages")
+  services               services?                @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_message_service")
+  chat_sessions          chat_sessions            @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_message_session")
+  users                  users?                   @relation(fields: [sender_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_message_user")
+  chat_service_matches   chat_service_matches[]
+  chat_suggestions       chat_suggestions[]
+
+  @@index([created_at], map: "idx_chat_messages_created")
+  @@index([intent_id], map: "idx_chat_messages_intent")
+  @@index([sender_id], map: "idx_chat_messages_sender")
+  @@index([service_id], map: "idx_chat_messages_service")
+  @@index([session_id], map: "idx_chat_messages_session")
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model chat_service_matches {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id    String        @db.Uuid
+  message_id    String        @db.Uuid
+  service_id    BigInt
+  confidence    Decimal       @db.Decimal(5, 4)
+  source        String?       @db.VarChar(50)
+  detected_at   DateTime      @default(now()) @db.Timestamptz(6)
+  chat_messages chat_messages @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_service_match_message")
+  services      services      @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_service_match_service")
+  chat_sessions chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_service_match_session")
+
+  @@index([service_id], map: "idx_service_match_service")
+  @@index([session_id], map: "idx_service_match_session")
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model chat_sessions {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_token          String                   @unique(map: "uq_chat_session_token") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                BigInt?
+  lead_id                BigInt?
+  channel                String                   @default("WEB") @db.VarChar(30)
+  status                 String                   @default("ACTIVE") @db.VarChar(30)
+  started_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  last_activity_at       DateTime                 @default(now()) @db.Timestamptz(6)
+  ended_at               DateTime?                @db.Timestamptz(6)
+  ip_address             String?                  @db.Inet
+  user_agent             String?
+  language               String?                  @db.VarChar(20)
+  metadata               Json?
+  created_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  updated_at             DateTime                 @default(now()) @db.Timestamptz(6)
+  chat_context           chat_context?
+  chat_events            chat_events[]
+  chat_feedback          chat_feedback[]
+  chat_intent_detections chat_intent_detections[]
+  chat_messages          chat_messages[]
+  chat_service_matches   chat_service_matches[]
+  leads                  leads?                   @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_session_lead")
+  users                  users?                   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_session_user")
+  chat_suggestions       chat_suggestions[]
+  consents               consents[]
+  handovers              handovers[]
+
+  @@index([last_activity_at], map: "idx_chat_sessions_last_activity")
+  @@index([lead_id], map: "idx_chat_sessions_lead")
+  @@index([status], map: "idx_chat_sessions_status")
+  @@index([user_id], map: "idx_chat_sessions_user")
+  @@schema("chat")
+}
+
+model chat_suggestions {
+  id            String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id    String         @db.Uuid
+  message_id    String?        @db.Uuid
+  label         String
+  action_type   String         @db.VarChar(50)
+  action_value  String?
+  display_order Int            @default(1)
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
+  chat_messages chat_messages? @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_suggestion_message")
+  chat_sessions chat_sessions  @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_suggestion_session")
+
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model consents {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id     String        @db.Uuid
+  user_id        BigInt?
+  consent_type   String        @db.VarChar(50)
+  granted        Boolean
+  policy_version String?       @db.VarChar(50)
+  consent_text   String?
+  ip_address     String?       @db.Inet
+  granted_at     DateTime      @default(now()) @db.Timestamptz(6)
+  revoked_at     DateTime?     @db.Timestamptz(6)
+  chat_sessions  chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_consent_session")
+  users          users?        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_chat_consent_user")
+
+  @@schema("chat")
+}
+
+model handover_assignments {
+  id                                            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  handover_id                                   String    @db.Uuid
+  assigned_to                                   BigInt
+  assigned_by                                   BigInt?
+  assigned_at                                   DateTime  @default(now()) @db.Timestamptz(6)
+  unassigned_at                                 DateTime? @db.Timestamptz(6)
+  reason                                        String?
+  users_handover_assignments_assigned_byTousers users?    @relation("handover_assignments_assigned_byTousers", fields: [assigned_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_handover_assignment_assigned_by")
+  handovers                                     handovers @relation(fields: [handover_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_handover_assignment_handover")
+  users_handover_assignments_assigned_toTousers users     @relation("handover_assignments_assigned_toTousers", fields: [assigned_to], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_handover_assignment_user")
+
+  @@schema("chat")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model handovers {
+  id                                  String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  session_id                          String                 @db.Uuid
+  lead_id                             BigInt?
+  requested_by                        BigInt?
+  assigned_to                         BigInt?
+  channel                             String                 @db.VarChar(30)
+  reason                              String                 @db.VarChar(50)
+  status                              String                 @default("REQUESTED") @db.VarChar(30)
+  requested_at                        DateTime               @default(now()) @db.Timestamptz(6)
+  assigned_at                         DateTime?              @db.Timestamptz(6)
+  started_at                          DateTime?              @db.Timestamptz(6)
+  completed_at                        DateTime?              @db.Timestamptz(6)
+  closed_at                           DateTime?              @db.Timestamptz(6)
+  notes                               String?
+  metadata                            Json?
+  handover_assignments                handover_assignments[]
+  users_handovers_assigned_toTousers  users?                 @relation("handovers_assigned_toTousers", fields: [assigned_to], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_handover_assigned_to")
+  leads                               leads?                 @relation(fields: [lead_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_handover_lead")
+  users_handovers_requested_byTousers users?                 @relation("handovers_requested_byTousers", fields: [requested_by], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_handover_requested_by")
+  chat_sessions                       chat_sessions          @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_handover_session")
+
+  @@index([assigned_to], map: "idx_handovers_assigned")
+  @@index([lead_id], map: "idx_handovers_lead")
+  @@index([requested_at], map: "idx_handovers_requested")
+  @@index([session_id], map: "idx_handovers_session")
+  @@index([status], map: "idx_handovers_status")
+  @@schema("chat")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model team_members {
+  id                                   BigInt         @id @default(autoincrement())
+  uuid                                 String         @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                                 String         @db.VarChar(200)
+  position                             String         @db.VarChar(200)
+  bio                                  String?
+  photo_url                            String?
+  sort_order                           Int            @default(1)
+  is_active                            Boolean        @default(true)
+  created_by                           BigInt?
+  updated_by                           BigInt?
+  created_at                           DateTime       @default(now()) @db.Timestamptz(6)
+  updated_at                           DateTime       @default(now()) @db.Timestamptz(6)
+  profession                           String?        @db.VarChar(200)
+  area                                 String?        @db.VarChar(150)
+  service_code                         String?        @db.VarChar(50)
+  specialties                          Json           @default("[]")
+  certifications                       Json?
+  certifications_label                 String?        @db.VarChar(150)
+  is_transversal                       Boolean        @default(false)
+  org_level                            Int?           @db.SmallInt
+  parent_id                            BigInt?
+  connector_curve                      String?        @db.VarChar(5)
+  photo_alt                            String?        @db.VarChar(300)
+  users_team_members_created_byTousers users?         @relation("team_members_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction)
+  team_members                         team_members?  @relation("team_membersToteam_members", fields: [parent_id], references: [id], onUpdate: NoAction)
+  other_team_members                   team_members[] @relation("team_membersToteam_members")
+  services                             services?      @relation(fields: [service_code], references: [code])
+  users_team_members_updated_byTousers users?         @relation("team_members_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@index([is_active], map: "idx_team_members_active")
+  @@index([sort_order], map: "idx_team_members_order")
+  @@index([org_level], map: "idx_team_members_org_level")
+  @@index([parent_id], map: "idx_team_members_parent")
+  @@schema("content")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model activities {
+  id             BigInt   @id @default(autoincrement())
+  uuid           String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type           String   @db.VarChar(20)
+  description    String
+  author_user_id BigInt?
+  occurred_at    DateTime @default(now()) @db.Timestamptz(6)
+  related_type   String?  @db.VarChar(20)
+  related_id     BigInt?
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime @default(now()) @db.Timestamptz(6)
+  users          users?   @relation(fields: [author_user_id], references: [id], onUpdate: NoAction)
+
+  @@index([author_user_id], map: "idx_crm_activities_author")
+  @@index([occurred_at], map: "idx_crm_activities_occurred")
+  @@index([related_type, related_id], map: "idx_crm_activities_related")
+  @@schema("crm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model company_profile {
+  id                            Int      @id @default(1) @db.SmallInt
+  home_about_eyebrow            String?  @db.VarChar(150)
+  home_about_title              String?  @db.VarChar(300)
+  home_about_text               String?
+  home_about_image_url          String?
+  home_about_stat1_value        String?  @db.VarChar(20)
+  home_about_stat1_label        String?  @db.VarChar(150)
+  home_about_stat2_value        String?  @db.VarChar(20)
+  home_about_stat2_label        String?  @db.VarChar(150)
+  about_hero_title              String?  @db.VarChar(300)
+  about_hero_subtitle           String?  @db.VarChar(400)
+  about_hero_image_url          String?
+  about_who_title               String?  @db.VarChar(300)
+  about_who_text                String?
+  about_who_image_url           String?
+  about_mission_text            String?
+  about_mission_image_url       String?
+  about_vision_year             String?  @db.VarChar(10)
+  about_vision_text             String?
+  about_vision_image_url        String?
+  mission_vision_is_placeholder Boolean  @default(true)
+  about_ecosystem_title         String?  @db.VarChar(300)
+  about_ecosystem_text          String?
+  about_team_title              String?  @db.VarChar(300)
+  about_team_subtitle           String?  @db.VarChar(400)
+  about_cta_title               String?  @db.VarChar(300)
+  about_cta_message             String?
+  about_cta_image_url           String?
+  updated_by                    BigInt?
+  updated_at                    DateTime @default(now()) @db.Timestamptz(6)
+  users                         users?   @relation(fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@schema("content")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model company_values {
+  id                                     BigInt   @id @default(autoincrement())
+  uuid                                   String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key                                    String   @unique @db.VarChar(50)
+  title                                  String   @db.VarChar(150)
+  description                            String?
+  icon_key                               String?  @db.VarChar(50)
+  image_url                              String?
+  sort_order                             Int      @default(1)
+  is_active                              Boolean  @default(true)
+  created_by                             BigInt?
+  updated_by                             BigInt?
+  created_at                             DateTime @default(now()) @db.Timestamptz(6)
+  updated_at                             DateTime @default(now()) @db.Timestamptz(6)
+  users_company_values_created_byTousers users?   @relation("company_values_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction)
+  users_company_values_updated_byTousers users?   @relation("company_values_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@index([is_active], map: "idx_company_values_active")
+  @@index([sort_order], map: "idx_company_values_order")
+  @@schema("content")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model hero_slides {
+  id                                  BigInt    @id @default(autoincrement())
+  uuid                                String    @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug                                String    @unique @db.VarChar(100)
+  service_code                        String?   @db.VarChar(50)
+  name_white                          String    @db.VarChar(50)
+  name_blue                           String    @db.VarChar(50)
+  title                               String    @db.VarChar(300)
+  description                         String?
+  image_url                           String?
+  image_position                      String?   @db.VarChar(50)
+  href                                String    @db.VarChar(300)
+  items                               Json      @default("[]")
+  sort_order                          Int       @default(1)
+  is_active                           Boolean   @default(true)
+  created_by                          BigInt?
+  updated_by                          BigInt?
+  created_at                          DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at                          DateTime  @default(now()) @db.Timestamptz(6)
+  users_hero_slides_created_byTousers users?    @relation("hero_slides_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction)
+  services                            services? @relation(fields: [service_code], references: [code])
+  users_hero_slides_updated_byTousers users?    @relation("hero_slides_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@index([is_active], map: "idx_hero_slides_active")
+  @@index([sort_order], map: "idx_hero_slides_order")
+  @@schema("content")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model who_we_are_concepts {
+  id                                          BigInt   @id @default(autoincrement())
+  uuid                                        String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key                                         String   @unique @db.VarChar(50)
+  label                                       String   @db.VarChar(100)
+  description                                 String?
+  sort_order                                  Int      @default(1)
+  is_active                                   Boolean  @default(true)
+  created_by                                  BigInt?
+  updated_by                                  BigInt?
+  created_at                                  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at                                  DateTime @default(now()) @db.Timestamptz(6)
+  users_who_we_are_concepts_created_byTousers users?   @relation("who_we_are_concepts_created_byTousers", fields: [created_by], references: [id], onUpdate: NoAction)
+  users_who_we_are_concepts_updated_byTousers users?   @relation("who_we_are_concepts_updated_byTousers", fields: [updated_by], references: [id], onUpdate: NoAction)
+
+  @@index([is_active], map: "idx_who_we_are_concepts_active")
+  @@schema("content")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model notifications {
+  id         BigInt   @id @default(autoincrement())
+  uuid       String   @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    BigInt
+  title      String   @db.VarChar(200)
+  message    String?
+  type       String   @default("INFO") @db.VarChar(20)
+  link       String?  @db.VarChar(300)
+  is_read    Boolean  @default(false)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  users      users    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([created_at], map: "idx_notifications_created")
+  @@index([user_id, is_read], map: "idx_notifications_user_unread")
+  @@schema("foundation")
+}
+
+/// Uso de un archivo de foundation.files por un contenido (Etapa 15, migración 014).
+model file_links {
+  id          BigInt   @id @default(autoincrement())
+  file_id     BigInt
+  entity_type String   @db.VarChar(50)
+  entity_id   BigInt
+  slot        String   @db.VarChar(30)
+  alt_text    String?  @db.VarChar(300)
+  sort_order  Int      @default(0) @db.SmallInt
+  created_by  BigInt?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  files       files    @relation(fields: [file_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users       users?   @relation(fields: [created_by], references: [id], onUpdate: NoAction)
+
+  @@unique([entity_type, entity_id, slot, file_id], map: "uk_file_link")
+  @@index([entity_type, entity_id, slot], map: "idx_file_links_entity")
+  @@index([file_id], map: "idx_file_links_file")
+  @@schema("foundation")
+}
+
+/// Contador atómico de rate limiting compartido entre instancias (tabla UNLOGGED, datos descartables; la clave es un HMAC).
+model rate_limit_counters {
+  counter_key String   @id @db.Char(64)
+  hits        Int      @default(1)
+  expires_at  DateTime @db.Timestamptz(6)
+
+  @@schema("foundation")
+}
+
+/// Visitante seudónimo de la analítica web (UUID aleatorio del navegador, solo con consentimiento).
+model analytics_visitors {
+  id            String               @id @db.Uuid
+  first_seen_at DateTime             @default(now()) @db.Timestamptz(6)
+  last_seen_at  DateTime             @default(now()) @db.Timestamptz(6)
+  sessions      analytics_sessions[]
+
+  @@index([last_seen_at], map: "idx_analytics_visitors_last_seen")
+  @@map("visitors")
+  @@schema("analytics")
+}
+
+model analytics_sessions {
+  id               String             @id @db.Uuid
+  visitor_id       String             @db.Uuid
+  started_at       DateTime           @default(now()) @db.Timestamptz(6)
+  last_activity_at DateTime           @default(now()) @db.Timestamptz(6)
+  pageviews        Int                @default(0)
+  events           Int                @default(0)
+  conversions      Int                @default(0)
+  entry_path       String?            @db.VarChar(300)
+  exit_path        String?            @db.VarChar(300)
+  channel          String             @default("direct") @db.VarChar(30)
+  visitors         analytics_visitors @relation(fields: [visitor_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([started_at], map: "idx_analytics_sessions_started")
+  @@index([visitor_id], map: "idx_analytics_sessions_visitor")
+  @@map("sessions")
+  @@schema("analytics")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model analytics_events {
+  id            BigInt   @id @default(autoincrement())
+  occurred_at   DateTime @default(now()) @db.Timestamptz(6)
+  event_type    String   @db.VarChar(10)
+  event_name    String?  @db.VarChar(60)
+  is_conversion Boolean  @default(false)
+  path          String   @db.VarChar(300)
+  visitor_id    String?  @db.Uuid
+  session_id    String?  @db.Uuid
+  is_entrance   Boolean  @default(false)
+  channel       String   @default("direct") @db.VarChar(30)
+  referrer_host String?  @db.VarChar(200)
+  utm_source    String?  @db.VarChar(100)
+  utm_medium    String?  @db.VarChar(100)
+  utm_campaign  String?  @db.VarChar(150)
+  utm_term      String?  @db.VarChar(150)
+  utm_content   String?  @db.VarChar(150)
+  device_type   String?  @db.VarChar(20)
+  browser       String?  @db.VarChar(40)
+  os            String?  @db.VarChar(40)
+  country       String?  @db.VarChar(2)
+  region        String?  @db.VarChar(100)
+  props         Json?
+
+  @@index([occurred_at], map: "idx_analytics_events_time")
+  @@index([event_type, occurred_at], map: "idx_analytics_events_type_time")
+  @@index([session_id], map: "idx_analytics_events_session")
+  @@map("events")
+  @@schema("analytics")
+}
+
+enum activity_type {
+  CALL
+  EMAIL
+  MEETING
+  VISIT
+  FOLLOW_UP
+  WHATSAPP
+
+  @@schema("crm")
+}
+
+enum company_size {
+  MICRO
+  SMALL
+  MEDIUM
+  LARGE
+
+  @@schema("crm")
+}
+
+enum contact_channel {
+  WEBSITE
+  WHATSAPP
+  EMAIL
+  PHONE
+  FACEBOOK
+  INSTAGRAM
+  LINKEDIN
+  REFERRAL
+
+  @@schema("crm")
+}
+
+enum audit_action {
+  CREATE
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  RESTORE
+
+  @@schema("security")
+}
+
+enum document_type {
+  CC
+  CE
+  NIT
+  PASSPORT
+  TI
+
+  @@schema("security")
+}
+
+enum gender_type {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+
+  @@schema("security")
+}
+
+enum user_role {
+  ADMINISTRATOR
+  EDITOR
+  COMMERCIAL
+  CLIENT
+  VISITOR
+
+  @@schema("security")
+}
+
+enum user_status {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+  PENDING_VERIFICATION
+
+  @@schema("security")
+}

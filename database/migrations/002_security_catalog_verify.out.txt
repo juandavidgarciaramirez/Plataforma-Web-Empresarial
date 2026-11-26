@@ -1,0 +1,71 @@
+Ejecutado vía Prisma Client (sin `psql` disponible en este entorno).
+Script: run-sql-verify.js (temporal, no versionado).
+
+--- total_permissions (esperado 76) ---
+76  ✔ PASS
+
+--- total_roles (esperado 7) ---
+7  ✔ PASS
+
+--- 32 permission_key nuevas (esperado 32 filas, ninguna faltante) ---
+audit.logs.read
+cms.news.create
+cms.news.delete
+cms.news.read
+cms.news.update
+cms.team.create
+cms.team.delete
+cms.team.read
+cms.team.update
+crm.activities.create
+crm.activities.delete
+crm.activities.read
+crm.activities.update
+crm.leads.assign
+crm.leads.convert
+crm.opportunities.assign
+crm.opportunities.change_stage
+crm.opportunities.close
+crm.opportunities.create
+crm.opportunities.delete
+crm.opportunities.read
+crm.opportunities.update
+crm.pipeline.read
+crm.tasks.assign
+crm.tasks.create
+crm.tasks.delete
+crm.tasks.read
+crm.tasks.update
+security.roles.create
+security.roles.delete
+security.roles.read
+security.roles.update
+(32 filas)  ✔ PASS
+
+--- roles nuevos ---
+Recursos Humanos | Gestión de talento humano: convocatorias y postulaciones. | is_system=true | is_active=true
+Soporte          | Atención de PQR.                                          | is_system=true | is_active=true
+✔ PASS
+
+--- permisos por rol, después de la migración ---
+Administrador:      76  (44 previos + 32 nuevos = acceso total)
+Cliente:             4  (sin cambios)
+Comercial:          31  (12 previos + 19 nuevos)
+Editor:             20  (12 previos + 8 nuevos)
+Recursos Humanos:    4  (rol nuevo)
+Soporte:             2  (rol nuevo)
+Visitante:           0  (sin cambios, no se asumió READ_ONLY global)
+✔ PASS — coincide exactamente con lo planeado en docs/backend-audit.md
+
+--- usuarios existentes (deben seguir intactos) ---
+1 | admin@judplatform.com | ACTIVE | role_id=1
+2 | adminin               | ACTIVE | role_id=1
+✔ PASS — ningún dato de usuario fue tocado por esta migración
+
+--- permission_key duplicadas (esperado 0 filas) ---
+(0 filas)  ✔ PASS
+
+--- nombres de rol duplicados (esperado 0 filas) ---
+(0 filas)  ✔ PASS
+
+CONCLUSIÓN: Etapa 2 (catálogo de seguridad) — PASS. Sin bloqueos.
